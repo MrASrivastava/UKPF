@@ -1,0 +1,2293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK Personal Finance Flowchart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+<style>
+/* ─── DESIGN LANGUAGE SPEC TOKENS ───────────────────────────────────── */
+:root {
+  /* Base neutrals */
+  --bg-page:       #efefef;
+  --bg-surface:    #ffffff;
+  --bg-subtle:     #f6f6f6;
+  --border:        #c8c8c8;
+  --text-primary:  #1f1f1f;
+  --text-secondary:#555555;
+  --text-muted:    #767676;
+  --link:          #2b6cb0;
+  --focus:         #1d4ed8;
+
+  /* Stage A — Step 1 (rose) */
+  --s1-fill:   #efd0d0; --s1-strong: #e6bcbc; --s1-border: #c99696; --s1-band: #e1b5b5;
+  /* Stage B — Steps 2-3 (amber) */
+  --s2-fill:   #f3e3ad; --s2-strong: #ecd58d; --s2-border: #c9af63; --s2-band: #e7d08a;
+  /* Stage C — Steps 4-5 (green) */
+  --s3-fill:   #dbeacb; --s3-strong: #c8ddb4; --s3-border: #98b07f; --s3-band: #bfd7a6;
+  /* Stage D — Step 6 (blue) */
+  --s4-fill:   #dce8f6; --s4-strong: #c8daef; --s4-border: #98b2cf; --s4-band: #bfd2ea;
+  /* Stage E — Steps 7-8 (lavender) */
+  --s5-fill:   #ddd4f2; --s5-strong: #cfc2ea; --s5-border: #9f95c6; --s5-band: #c2b4e4;
+
+  /* Status colours */
+  --critical-bg:   #f7dada; --critical-border: #c97b7b; --critical-text: #5c1a1a;
+  --warning-bg:    #f6edc8; --warning-border:  #c7aa53; --warning-text:  #4a3400;
+  --progress-bg:   #dfead5; --progress-border: #8fad7e; --progress-text: #1e3d12;
+  --info-bg:       #dfe9f5; --info-border:     #90aac8; --info-text:     #1a3050;
+
+  /* Radius & spacing */
+  --r-sm: 6px; --r-md: 8px;
+  --font: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+/* Stage helper classes — set --band, --fill, --border for the current node */
+.sg1 { --band:var(--s1-band); --fill:var(--s1-fill); --sborder:var(--s1-border); }
+.sg2 { --band:var(--s2-band); --fill:var(--s2-fill); --sborder:var(--s2-border); }
+.sg3 { --band:var(--s3-band); --fill:var(--s3-fill); --sborder:var(--s3-border); }
+.sg4 { --band:var(--s4-band); --fill:var(--s4-fill); --sborder:var(--s4-border); }
+.sg5 { --band:var(--s5-band); --fill:var(--s5-fill); --sborder:var(--s5-border); }
+.sg0 { --band:var(--border);  --fill:var(--bg-subtle); --sborder:var(--border); }
+
+/* ─── RESET ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg-page); color: var(--text-primary); min-height: 100vh; line-height: 1.6; font-size: 15px; }
+a { color: var(--link); }
+
+/* ─── TOP BAR ────────────────────────────────────────────────────────── */
+.topbar {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  height: 50px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-primary); }
+.topbar-sigil { font-weight: 700; font-size: 16px; width: 30px; height: 30px; background: var(--text-primary); color: var(--bg-surface); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.topbar-name { font-weight: 600; font-size: 14px; line-height: 1.2; }
+.topbar-sub  { font-size: 11px; color: var(--text-muted); }
+.btn-restart { background: none; border: 1px solid var(--border); color: var(--text-secondary); font-family: var(--font); font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: var(--r-sm); cursor: pointer; transition: all 140ms; }
+.btn-restart:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ─── PROGRESS BAR ───────────────────────────────────────────────────── */
+.progress-wrap { height: 3px; background: var(--border); }
+.progress-bar  { height: 100%; background: var(--text-secondary); transition: width 480ms ease, background 320ms ease; }
+
+/* ─── LAYOUT ─────────────────────────────────────────────────────────── */
+.layout { display: grid; grid-template-columns: 252px 1fr; max-width: 1060px; margin: 0 auto; min-height: calc(100vh - 53px); }
+
+/* ─── SIDEBAR ────────────────────────────────────────────────────────── */
+.sidebar {
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  padding: 20px 14px;
+  position: sticky; top: 53px;
+  height: calc(100vh - 53px);
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 0;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sb-label { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; padding: 0 4px; }
+
+/* Step list */
+.step-list { display: flex; flex-direction: column; }
+.step-row { display: flex; align-items: flex-start; gap: 8px; }
+.step-connector { width: 1px; height: 10px; background: var(--border); margin: 0 0 0 15px; }
+
+.step-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: var(--r-sm); transition: background 140ms; cursor: default; width: 100%; }
+.step-item.done { cursor: pointer; }
+
+.step-circle {
+  width: 22px; height: 22px; border-radius: 50%;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 140ms;
+}
+.step-item.locked .step-circle  { background: #e4e4e4; color: #999; }
+.step-item.active .step-circle  { background: var(--band); color: var(--text-primary); border: 1.5px solid var(--sborder); }
+.step-item.done   .step-circle  { background: var(--progress-bg); color: var(--progress-text); border: 1px solid var(--progress-border); }
+
+.step-label { font-size: 12px; font-weight: 400; color: var(--text-muted); line-height: 1.3; }
+.step-item.active .step-label { color: var(--text-primary); font-weight: 600; }
+.step-item.done   .step-label { color: #767676; }
+
+/* Sidebar divider */
+.sb-divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+/* Journey trail */
+.trail-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px; font-size: 12px; }
+.trail-key { color: var(--text-muted); }
+.trail-val { font-weight: 600; color: var(--text-secondary); }
+.trail-val.good { color: var(--progress-text); }
+.trail-val.bad  { color: var(--critical-text); }
+.trail-val.warn { color: var(--warning-text); }
+.trail-val.none { font-weight: 400; color: var(--text-muted); }
+
+/* Sidebar footer */
+.sb-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); line-height: 1.7; }
+.sb-footer a { color: var(--link); text-decoration: none; }
+.sb-footer a:hover { text-decoration: underline; }
+
+/* ─── MAIN ───────────────────────────────────────────────────────────── */
+.main { padding: 28px 36px 72px; }
+
+/* ─── CARD ───────────────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--band);
+  border-radius: var(--r-md);
+  padding: 24px;
+  max-width: 600px;
+  animation: fadeUp 220ms ease both;
+}
+.card.card-plain { border-top-width: 1px; }
+.card.card-crisis { border-top-color: var(--critical-border); border-color: var(--critical-border); background: var(--critical-bg); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* Stage badge */
+.stage-badge {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 20px; margin-bottom: 12px;
+  background: var(--fill); border: 1px solid var(--sborder);
+  color: var(--text-secondary);
+}
+
+/* Card title & intro */
+.card-title  { font-size: 20px; font-weight: 700; color: var(--text-primary); line-height: 1.3; margin-bottom: 6px; }
+.card-intro  { font-size: 14px; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.65; }
+.card-intro2 { font-size: 13px; color: var(--text-muted); margin: -10px 0 18px; font-style: italic; }
+
+/* ─── ACTION LIST ────────────────────────────────────────────────────── */
+.action-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.action-item { display: flex; align-items: flex-start; gap: 9px; padding: 9px 11px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--r-sm); }
+.action-tick { width: 17px; height: 17px; background: var(--fill); border: 1px solid var(--sborder); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.action-tick svg { width: 9px; height: 9px; stroke: var(--text-secondary); stroke-width: 2.5; fill: none; }
+.action-text { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+.action-text strong { color: var(--text-primary); font-weight: 600; }
+
+/* ─── VEHICLE LIST ───────────────────────────────────────────────────── */
+.vehicle-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.vehicle-item { padding: 11px 13px; background: var(--bg-subtle); border: 1px solid var(--border); border-left: 3px solid var(--band); border-radius: var(--r-sm); }
+.vehicle-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.vehicle-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+/* ─── NOTE BOX ───────────────────────────────────────────────────────── */
+.note { display: flex; align-items: flex-start; gap: 8px; padding: 9px 11px; border-radius: var(--r-sm); font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+.note.note-info { background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info-text); }
+.note.note-warn { background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); }
+.note.note-crit { background: var(--critical-bg); border: 1px solid var(--critical-border); color: var(--critical-text); }
+.note svg { flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; }
+
+/* ─── CHARITY LINKS ──────────────────────────────────────────────────── */
+.charity-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.charity-link { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: var(--bg-surface); border: 1px solid var(--critical-border); border-radius: var(--r-sm); text-decoration: none; color: var(--text-primary); font-size: 13px; font-weight: 500; transition: background 140ms; }
+.charity-link:hover { background: var(--critical-bg); }
+.charity-icon { font-size: 16px; flex-shrink: 0; }
+
+/* ─── WIKI LINKS ─────────────────────────────────────────────────────── */
+.wiki-section { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.wiki-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+.wiki-links { display: flex; flex-wrap: wrap; gap: 5px; }
+.wiki-link { display: inline-flex; align-items: center; gap: 3px; padding: 4px 9px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 20px; font-size: 11px; font-weight: 500; color: var(--link); text-decoration: none; transition: all 140ms; }
+.wiki-link:hover { background: var(--info-bg); border-color: var(--info-border); }
+.wiki-link svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* ─── QUESTION ───────────────────────────────────────────────────────── */
+.q-diamond { display: inline-block; width: 9px; height: 9px; background: var(--band); transform: rotate(45deg); margin-right: 7px; vertical-align: middle; }
+.q-text    { font-size: 18px; font-weight: 700; color: var(--text-primary); line-height: 1.35; margin-bottom: 8px; }
+.q-expl    { font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; padding: 9px 12px; background: var(--fill); border: 1px solid var(--sborder); border-left: 3px solid var(--band); border-radius: var(--r-sm); line-height: 1.6; }
+.answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 14px; }
+.answer-btn { border: 1px solid var(--border); background: var(--bg-surface); border-radius: var(--r-md); padding: 15px 12px; cursor: pointer; font-family: var(--font); display: flex; flex-direction: column; align-items: center; gap: 5px; transition: all 140ms; }
+.answer-btn:hover { border-color: var(--sborder); background: var(--fill); }
+.answer-icon  { font-size: 18px; }
+.answer-label { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.answer-sub   { font-size: 11px; color: var(--text-muted); text-align: center; }
+
+/* Why toggle */
+.why-toggle { background: none; border: none; cursor: pointer; font-family: var(--font); font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 8px; transition: color 140ms; }
+.why-toggle:hover { color: var(--link); }
+.why-arrow { transition: transform 140ms; display: inline-block; }
+.why-toggle.open .why-arrow { transform: rotate(90deg); }
+.why-body { display: none; padding: 9px 11px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--r-sm); font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+.why-body.open { display: block; animation: fadeUp 160ms ease both; }
+
+/* ─── BUTTONS ────────────────────────────────────────────────────────── */
+.btn-continue {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--band); color: var(--text-primary);
+  border: 1px solid var(--sborder);
+  border-radius: var(--r-sm); padding: 9px 16px;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: filter 140ms;
+}
+.btn-continue:hover { filter: brightness(.94); }
+.btn-continue svg { width: 13px; height: 13px; }
+.btn-continue.btn-crisis { background: var(--critical-bg); border-color: var(--critical-border); }
+
+.btn-back { display: inline-flex; align-items: center; gap: 5px; background: none; border: 1px solid var(--border); color: var(--text-secondary); border-radius: var(--r-sm); padding: 6px 11px; font-family: var(--font); font-size: 12px; cursor: pointer; transition: all 140ms; margin-bottom: 14px; }
+.btn-back:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+.btn-back svg { width: 11px; height: 11px; }
+
+.nav-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+.btn-start-over { background: none; border: 1px solid var(--border); color: var(--text-secondary); font-family: var(--font); font-size: 12px; padding: 7px 12px; border-radius: var(--r-sm); cursor: pointer; transition: all 140ms; }
+.btn-start-over:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ─── INPUT PANEL ────────────────────────────────────────────────────── */
+.ip-wrap { margin-top: 18px; border: 1px solid var(--border); border-radius: var(--r-sm); overflow: hidden; }
+.ip-header { display: flex; align-items: center; justify-content: space-between; padding: 9px 13px; background: var(--bg-subtle); border-bottom: 1px solid var(--border); cursor: pointer; transition: background 140ms; user-select: none; }
+.ip-header:hover { background: #e8e8e8; }
+.ip-header-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.ip-chevron { font-size: 10px; color: var(--text-muted); transition: transform 140ms; }
+.ip-header.open .ip-chevron { transform: rotate(180deg); }
+.ip-body { display: none; padding: 14px 13px; }
+.ip-body.open { display: block; animation: fadeUp 160ms ease both; }
+
+/* Input rows */
+.ip-field-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.ip-field-row:last-of-type { margin-bottom: 0; }
+.ip-label { font-size: 13px; color: var(--text-secondary); flex: 1; }
+.ip-field-wrap { display: flex; align-items: center; gap: 4px; }
+.ip-prefix, .ip-suffix { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+.ip-field {
+  width: 96px; padding: 5px 8px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  color: var(--text-primary); background: var(--bg-surface);
+  text-align: right; transition: border-color 140ms;
+}
+.ip-field:focus { outline: none; border-color: var(--focus); }
+.ip-field.short { width: 66px; }
+.ip-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+/* Debt table */
+.debt-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
+.debt-table th { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: .07em; text-transform: uppercase; padding: 4px 5px; text-align: left; border-bottom: 1px solid var(--border); }
+.debt-table td { padding: 5px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.debt-field { width: 72px; padding: 4px 6px; border: 1px solid var(--border); border-radius: 4px; font-family: var(--font); font-size: 12px; font-weight: 500; text-align: right; color: var(--text-primary); background: var(--bg-surface); }
+.debt-field:focus { outline: none; border-color: var(--focus); }
+.debt-field.wide { width: 100px; }
+.btn-add-debt { width: 100%; background: none; border: 1px dashed var(--border); color: var(--text-muted); font-family: var(--font); font-size: 11px; padding: 5px; border-radius: var(--r-sm); cursor: pointer; margin-bottom: 10px; transition: all 140ms; }
+.btn-add-debt:hover { border-color: var(--text-secondary); color: var(--text-secondary); }
+.btn-del { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 14px; line-height: 1; padding: 2px 4px; }
+.btn-del:hover { color: var(--critical-border); }
+
+/* Goal table */
+.goal-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
+.goal-table th { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: .07em; text-transform: uppercase; padding: 4px 5px; text-align: left; border-bottom: 1px solid var(--border); }
+.goal-table td { padding: 5px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.goal-field { padding: 4px 6px; border: 1px solid var(--border); border-radius: 4px; font-family: var(--font); font-size: 12px; color: var(--text-primary); background: var(--bg-surface); }
+.goal-field:focus { outline: none; border-color: var(--focus); }
+.goal-field.gf-name { width: 120px; }
+.goal-field.gf-amt  { width: 76px; text-align: right; font-weight: 500; }
+.goal-field.gf-yrs  { width: 50px; text-align: right; font-weight: 500; }
+.goal-horizon-pill { font-size: 10px; padding: 2px 6px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+.g-short { background: var(--s4-fill); border: 1px solid var(--s4-border); color: var(--info-text); }
+.g-long  { background: var(--s5-fill); border: 1px solid var(--s5-border); color: #2e2060; }
+.btn-add-goal { width: 100%; background: none; border: 1px dashed var(--border); color: var(--text-muted); font-family: var(--font); font-size: 11px; padding: 5px; border-radius: var(--r-sm); cursor: pointer; margin-bottom: 10px; transition: all 140ms; }
+.btn-add-goal:hover { border-color: var(--text-secondary); color: var(--text-secondary); }
+.goal-monthly-cell { font-size: 11px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+.goal-monthly-cell.blank { color: var(--text-muted); font-weight: 400; }
+
+/* Goals allocation chart */
+.goals-alloc-chart { margin-top: 14px; padding: 12px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--r-sm); }
+.goals-alloc-title { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+.goals-alloc-subtitle { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; margin-top: 10px; margin-bottom: 5px; }
+
+/* ─── INSIGHT CARDS ──────────────────────────────────────────────────── */
+.insight-wrap { display: flex; flex-direction: column; gap: 7px; margin-top: 12px; }
+.ic { padding: 11px 13px; border-radius: var(--r-sm); border: 1px solid; }
+.ic.ic-progress { background: var(--progress-bg); border-color: var(--progress-border); }
+.ic.ic-critical { background: var(--critical-bg); border-color: var(--critical-border); }
+.ic.ic-warning  { background: var(--warning-bg);  border-color: var(--warning-border); }
+.ic.ic-info     { background: var(--info-bg);     border-color: var(--info-border); }
+.ic.ic-neutral  { background: var(--bg-subtle);   border-color: var(--border); }
+.ic-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+.ic-value { font-size: 21px; font-weight: 700; color: var(--text-primary); line-height: 1.1; margin-bottom: 3px; }
+.ic-text  { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+/* ─── OUTCOME NODE ───────────────────────────────────────────────────── */
+.outcome-header { text-align: center; margin-bottom: 18px; }
+.outcome-check { width: 44px; height: 44px; background: var(--progress-bg); border: 2px solid var(--progress-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px; animation: pop 300ms cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes pop { from { opacity:0; transform:scale(.5); } to { opacity:1; transform:scale(1); } }
+.journey-summary { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 11px 13px; margin-bottom: 14px; }
+.js-title { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+.js-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.js-tag { font-size: 11px; padding: 2px 7px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-secondary); }
+.principle-box { padding: 11px 13px; background: var(--fill); border: 1px solid var(--sborder); border-radius: var(--r-sm); margin-bottom: 14px; font-size: 13px; color: var(--text-secondary); font-style: italic; line-height: 1.55; }
+
+/* ─── DISCLAIMER ─────────────────────────────────────────────────────── */
+.disclaimer-box { padding: 9px 11px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--r-sm); font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px; }
+.card-footer { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); line-height: 1.7; }
+.card-footer a { color: var(--link); text-decoration: none; }
+.card-footer a:hover { text-decoration: underline; }
+
+/* ─── START NODE ─────────────────────────────────────────────────────── */
+.start-steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 14px 0; }
+.ss-item { display: flex; align-items: center; gap: 8px; padding: 7px 9px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--r-sm); font-size: 12px; color: var(--text-secondary); }
+.ss-num { width: 18px; height: 18px; border-radius: 50%; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* ─── SAVED TOAST ────────────────────────────────────────────────────── */
+.saved-toast { position: fixed; bottom: 18px; right: 18px; background: var(--text-primary); color: var(--bg-surface); padding: 7px 13px; border-radius: var(--r-sm); font-size: 12px; font-weight: 500; z-index: 999; display: none; }
+.saved-toast.show { display: block; animation: fadeUp 200ms ease both; }
+
+/* ─── RESUME BANNER ──────────────────────────────────────────────────── */
+.resume-banner { max-width: 600px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--r-md); padding: 13px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.resume-text p { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.resume-text span { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+.resume-btns { display: flex; gap: 7px; flex-shrink: 0; }
+.btn-resume { padding: 6px 12px; border-radius: var(--r-sm); font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 140ms; }
+.btn-resume.primary { background: var(--text-primary); color: var(--bg-surface); border: 1px solid var(--text-primary); }
+.btn-resume.primary:hover { background: #333; }
+.btn-resume.secondary { background: none; color: var(--text-secondary); border: 1px solid var(--border); }
+.btn-resume.secondary:hover { border-color: var(--text-secondary); }
+
+/* ─── MOBILE ─────────────────────────────────────────────────────────── */
+.mobile-step-bar { display: none; overflow-x: auto; gap: 5px; padding: 9px 14px; background: var(--bg-surface); border-bottom: 1px solid var(--border); scrollbar-width: none; }
+.mobile-step-bar::-webkit-scrollbar { display: none; }
+.ms-pill { display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+.ms-pill.locked { background: #e4e4e4; color: #999; }
+.ms-pill.active { background: var(--fill); color: var(--text-primary); font-weight: 600; border: 1px solid var(--sborder); }
+.ms-pill.done   { background: var(--progress-bg); color: var(--progress-text); }
+.ms-num { width: 15px; height: 15px; border-radius: 50%; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ms-pill.locked .ms-num { background: #ccc; color: #666; }
+.ms-pill.active .ms-num { background: var(--band); color: var(--text-primary); }
+.ms-pill.done   .ms-num { background: var(--progress-border); color: #fff; }
+
+@media (max-width: 750px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 18px 14px 60px; }
+  .mobile-step-bar { display: flex; }
+  .card { padding: 18px 15px; }
+  .answer-grid { grid-template-columns: 1fr; }
+  .start-steps-grid { grid-template-columns: 1fr; }
+  .resume-banner { flex-direction: column; align-items: flex-start; }
+}
+
+/* ─── PERSONALISED OUTCOME SECTIONS ──────────────────────────── */
+.outcome-section { margin-bottom: 22px; }
+.outcome-section-title {
+  font-size: 10px; font-weight: 700; letter-spacing: .10em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 10px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+.outcome-vehicles-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .10em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 10px; margin-top: 22px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+
+/* Snapshot grid */
+.snap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.snap-item { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 9px 11px; }
+.snap-label { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
+.snap-value { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.snap-value.good { color: var(--progress-text); }
+.snap-value.bad  { color: var(--critical-text); }
+.snap-value.warn { color: var(--warning-text); }
+.snap-none { font-size: 13px; color: var(--text-muted); font-style: italic; padding: 6px 0; }
+
+/* Priority action list */
+.priority-list { display: flex; flex-direction: column; gap: 6px; }
+.priority-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+.priority-num {
+  min-width: 22px; height: 22px;
+  background: var(--band); border: 1px solid var(--sborder);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--text-primary); flex-shrink: 0; margin-top: 1px;
+}
+
+/* Download button */
+.btn-download {
+  background: var(--band); border: 1px solid var(--sborder);
+  color: var(--text-primary); font-family: var(--font);
+  font-size: 12px; font-weight: 600; padding: 7px 14px;
+  border-radius: var(--r-sm); cursor: pointer; transition: filter 140ms;
+}
+.btn-download:hover { filter: brightness(.92); }
+
+/* Print report — hidden on screen, shown only when printing */
+#printReport {
+  display: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10.5pt;
+  color: #1f1f1f;
+  background: white;
+  padding: 14mm 16mm;
+  max-width: 210mm;
+  box-sizing: border-box;
+}
+
+/* ─── PRINT REPORT STYLES (always-on layout — applies on screen & print) ── */
+.pr-header {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding-bottom: 10px; border-bottom: 2.5px solid #1f1f1f; margin-bottom: 14px;
+}
+.pr-logo {
+  width: 38px; height: 38px; background: #1f1f1f; color: white;
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 700; flex-shrink: 0; line-height: 1;
+  padding-bottom: 2px;
+}
+.pr-title    { font-size: 15pt; font-weight: 700; margin-bottom: 1px; }
+.pr-subtitle { font-size: 11pt; font-weight: 600; color: #444; margin-bottom: 2px; }
+.pr-meta     { font-size: 8pt; color: #888; }
+
+.pr-section-title {
+  font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em;
+  color: #767676; border-bottom: 1px solid #c8c8c8;
+  padding-bottom: 3px; margin: 13px 0 7px;
+}
+
+.pr-num-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 4px; }
+.pr-num-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5px 9px; background: #f6f6f6; border: 1px solid #ddd; border-radius: 4px;
+}
+.pr-num-label { font-size: 8.5pt; color: #555; }
+.pr-num-val   { font-size: 9.5pt; font-weight: 700; color: #1f1f1f; }
+
+.pr-stage {
+  border-left: 5px solid #c8c8c8; padding: 7px 10px;
+  margin-bottom: 4px; border-radius: 0 4px 4px 0;
+}
+.pr-stage-header { font-size: 10pt; font-weight: 700; margin-bottom: 2px; }
+.pr-stage-desc   { font-size: 8.5pt; color: #666; margin-bottom: 4px; line-height: 1.4; }
+.pr-metrics      { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 3px; }
+.pr-metric       { font-size: 8.5pt; color: #333; padding: 2px 6px; background: rgba(255,255,255,0.7); border-radius: 3px; border: 1px solid rgba(0,0,0,0.08); }
+.pr-flags        { margin-top: 5px; display: flex; flex-direction: column; gap: 3px; }
+.pr-flag {
+  font-size: 8.5pt; color: #444;
+  border-left: 3px solid #c97b7b; padding: 3px 7px;
+  border-radius: 0 3px 3px 0;
+}
+.pr-connector { text-align: center; color: #aaa; font-size: 11pt; margin: 1px 0; line-height: 1.2; }
+.pr-connector::before { content: "↓"; }
+
+.pr-actions { display: flex; flex-direction: column; gap: 5px; margin-bottom: 4px; }
+.pr-action-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 9.5pt; color: #333; line-height: 1.45;
+}
+.pr-action-num {
+  min-width: 18px; height: 18px; background: #1f1f1f; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 8pt; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+}
+
+.pr-vehicles { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
+.pr-vehicle {
+  padding: 5px 9px; background: #f9f7fe;
+  border: 1px solid #e0d8f0; border-left: 4px solid #c2b4e4;
+  border-radius: 0 4px 4px 0;
+}
+.pr-vehicle-name { font-size: 9.5pt; font-weight: 700; margin-bottom: 2px; }
+.pr-vehicle-desc { font-size: 8.5pt; color: #555; line-height: 1.45; }
+.pr-principle {
+  font-style: italic; font-size: 9pt; color: #555;
+  padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; margin-top: 6px;
+}
+
+.pr-disclaimer {
+  font-size: 7.5pt; color: #999; border-top: 1px solid #c8c8c8;
+  padding-top: 7px; margin-top: 14px; line-height: 1.65;
+}
+
+/* ─── PRINT / PDF EXPORT ─────────────────────────────────────── */
+@media print {
+  /* Hide all interactive UI */
+  .topbar, .progress-wrap, .sidebar, .mobile-step-bar,
+  .btn-back, .btn-restart, .btn-continue, .btn-start-over, .btn-download,
+  .ip-wrap, .why-toggle, .why-body, #resumeWrap, .saved-toast,
+  .nav-row, .card-footer, .answer-grid, .wiki-section { display: none !important; }
+
+  .layout { display: block !important; }
+  .main, #cardMount { display: none !important; }
+  #printReport { display: block !important; }
+
+  @page { size: A4 portrait; margin: 14mm 16mm; }
+
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    background: white !important;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10.5pt;
+    color: #1f1f1f;
+  }
+
+  .pr-stage, .pr-flag, .pr-action-item, .pr-vehicle, .pr-num-grid { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <a class="topbar-brand" href="https://ukpersonal.finance/flowchart/" target="_blank">
+    <div class="topbar-sigil">£</div>
+    <div>
+      <div class="topbar-name">UK Personal Finance</div>
+      <div class="topbar-sub">Interactive Flowchart · v3.0.10</div>
+    </div>
+  </a>
+  <button class="btn-restart" onclick="confirmRestart()">↺ Start over</button>
+</header>
+
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="mobile-step-bar" id="mobileBar"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-label">Your Journey</div>
+    <div class="step-list" id="stepList"></div>
+    <hr class="sb-divider">
+    <div class="sb-label" style="margin-bottom:8px">Your Numbers</div>
+    <div id="journeyTrail"></div>
+    <hr class="sb-divider">
+    <div class="sb-footer">
+      Based on the <a href="https://ukpersonal.finance/flowchart/" target="_blank">UKPF Flowchart</a> v3.0.10.<br>
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> · Not financial advice.
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div id="resumeWrap"></div>
+    <div id="cardMount"></div>
+  </main>
+</div>
+
+<div class="saved-toast" id="savedToast">✓ Progress saved</div>
+<div id="printReport"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// STAGE → CSS VARIABLES
+// ═══════════════════════════════════════════════════════════════
+const STAGE_CLASS = { 0:'sg0', 1:'sg1', 2:'sg2', 3:'sg3', 4:'sg4', 5:'sg5' };
+const STEP_STAGE  = { 1:1, 2:2, 3:2, 4:3, 5:3, 6:4, 7:5, 8:5 };
+
+// Sidebar step definitions
+const STEPS = [
+  { id:1, name:'Budget & Essential Bills',  short:'Budget' },
+  { id:2, name:'Initial Emergency Fund',     short:'Emerg. Fund 1' },
+  { id:3, name:'Pension Enrolment',          short:'Pension' },
+  { id:4, name:'Assess Debts',               short:'Debts' },
+  { id:5, name:'Full Emergency Fund',        short:'Emerg. Fund 2' },
+  { id:6, name:'Define Goals',               short:'Goals' },
+  { id:7, name:'Short-term Goals (<5 yrs)',  short:'Short-term' },
+  { id:8, name:'Long-term Goals (>5 yrs)',   short:'Long-term' },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// NODE DATA
+// ═══════════════════════════════════════════════════════════════
+const NODES = {
+  start: { type:'start', step:0, stage:0, next:'step_1_budget' },
+
+  step_1_budget: {
+    type:'action', step:1, stage:1, badge:'Step 1',
+    title:'Budget & Pay Essential Bills',
+    intro:'Before anything else, ensure your financial foundation is stable. This step covers everything needed to protect your essential obligations.',
+    actions:[
+      { text:'<strong>Create a budget</strong> — track all income and spending to understand your financial position' },
+      { text:'<strong>Check benefit eligibility</strong> — you may be entitled to support you are not claiming' },
+      { text:'<strong>Insure essentials</strong> — car, home contents, life insurance and income protection as relevant' },
+      { text:'<strong>Make minimum payments</strong> on all debts to avoid penalty charges and arrears' },
+      { text:'<strong>Prioritise important bills first:</strong> council tax, food, mortgage or rent, transport to work' },
+    ],
+    links:[
+      { label:'Budgeting', url:'https://ukpersonal.finance/budgeting/' },
+      { label:'Benefit entitlement', url:'https://ukpersonal.finance/benefits/' },
+      { label:'Insurance', url:'https://ukpersonal.finance/insurance/' },
+      { label:'Debt repayment', url:'https://ukpersonal.finance/debt/' },
+    ],
+    inputPanel: {
+      title:'📊 Add your monthly numbers',
+      fields:[
+        { id:'monthlyIncome',        label:'Monthly take-home income',      prefix:'£', placeholder:'e.g. 2500' },
+        { id:'monthlyEssential',     label:'Monthly essential spending',     prefix:'£', placeholder:'e.g. 1200', note:'Rent/mortgage, food, utilities, council tax, transport' },
+        { id:'monthlySavings',       label:'Monthly savings & investments',  prefix:'£', placeholder:'e.g. 200',  note:'Regular ISA, pension top-ups, direct savings deposits' },
+        { id:'monthlyDiscretionary', label:'Monthly other spending',         prefix:'£', placeholder:'e.g. 400',  note:'Subscriptions, dining, entertainment, everything else' },
+      ],
+    },
+    next:'q_rely_on_credit_for_essentials',
+  },
+
+  q_rely_on_credit_for_essentials: {
+    type:'question', step:1, stage:1, badge:'Step 1 — Check',
+    question:'Do you rely on credit cards or loans to pay for essential expenses?',
+    explanation:'Essentials include food, rent or mortgage, utilities, council tax, and transport to work. If you regularly borrow to cover these, that is a financial distress signal.',
+    why:'This is the most important triage question. Relying on credit for essentials means debt is compounding faster than it can be repaid. Stabilisation must come before any optimisation.',
+    answers:{ yes:'step_1_crisis_support', no:'q_any_debt_over_10_apr' },
+    yesLabel:'Yes, sometimes or regularly', noLabel:'No, essentials are covered',
+  },
+
+  step_1_crisis_support: {
+    type:'action', step:1, stage:1, crisis:true, badge:'Immediate Priority',
+    title:'Get Immediate Debt Support',
+    intro:'If you are using credit to pay for essentials, please reach out to a free debt charity. They can help you find options quickly — and everything is confidential.',
+    actions:[
+      { text:'<strong>Prioritise important bills above all else</strong> — council tax, rent or mortgage, utilities come first' },
+      { text:'<strong>Seek free debt counselling immediately</strong> from one of the charities below' },
+      { text:'<strong>Continue minimum payments</strong> on all debts where you can' },
+      { text:'<strong>Cut non-essential spending</strong> wherever possible' },
+    ],
+    charities:[
+      { name:'StepChange', sub:'Free debt advice and management plans', url:'https://www.stepchange.org/', icon:'🛡' },
+      { name:'National Debtline', sub:'Free, independent debt advice', url:'https://www.nationaldebtline.org/', icon:'📞' },
+      { name:'Citizens Advice', sub:'Wide-ranging free support', url:'https://www.citizensadvice.org.uk/', icon:'🤝' },
+    ],
+    noteText:'Once your situation has stabilised, continue through the flowchart.',
+    next:'q_any_debt_over_10_apr',
+  },
+
+  q_any_debt_over_10_apr: {
+    type:'question', step:1, stage:1, badge:'Step 1 — Check',
+    question:'Do you have any debt with an interest rate over 10% APR?',
+    explanation:'This includes credit cards, store cards, payday loans, and high-rate personal loans. Check your statements or contact your lender to confirm the APR. Most credit cards charge 20–30% APR.',
+    why:'Debt above 10% APR almost always outweighs expected investment returns. Eliminating it offers a guaranteed return equivalent to the rate — hard to beat elsewhere.',
+    answers:{ yes:'step_1_overpay_expensive_debt', no:'step_2_initial_emergency_fund' },
+    yesLabel:'Yes, I have high-interest debt', noLabel:'No debts over 10% APR',
+  },
+
+  step_1_overpay_expensive_debt: {
+    type:'action', step:1, stage:1, badge:'Step 1 — Action',
+    title:'Overpay Expensive Debt',
+    intro:'High-interest debt is a financial priority. Paying it off delivers a guaranteed return equal to the interest rate — one of the best available moves.',
+    actions:[
+      { text:'<strong>Use the avalanche method</strong> — focus overpayments on the highest-APR debt first, while maintaining minimum payments on all others' },
+      { text:'<strong>Explore refinancing</strong> — 0% balance transfer cards or lower-rate personal loans can significantly cut total interest' },
+      { text:'<strong>Avoid taking on new expensive debt</strong> during this phase' },
+    ],
+    noteText:'Stay focused until all debts above 10% APR are cleared. The freed-up monthly cash flow then powers the next steps.',
+    noteType:'info',
+    links:[{ label:'Debt repayment', url:'https://ukpersonal.finance/debt/' }],
+    inputPanel:{ type:'debts' },
+    next:'step_2_initial_emergency_fund',
+  },
+
+  step_2_initial_emergency_fund: {
+    type:'action', step:2, stage:2, badge:'Step 2',
+    title:'Build Your Initial Emergency Fund',
+    intro:'Before optimising pensions or debts further, give yourself a financial buffer. One unexpected cost should not push you back into expensive debt.',
+    actions:[
+      { text:'<strong>Save 1–3 months of essential outgoings</strong> in an easy-access savings account' },
+      { text:'<strong>Keep it separate</strong> from your current account so it is not accidentally spent' },
+      { text:'<strong>Prioritise accessibility</strong> over interest rate — this money must be reachable immediately' },
+    ],
+    noteText:'This is an initial buffer only. You will build it further at Step 5 once pensions and costly debts are sorted.',
+    noteType:'info',
+    links:[{ label:'Emergency fund', url:'https://ukpersonal.finance/emergency-fund/' }],
+    inputPanel:{
+      title:'📊 How much have you saved?',
+      fields:[
+        { id:'accessibleSavings', label:'Accessible cash savings', prefix:'£', placeholder:'e.g. 1000', note:'Easy-access savings accounts, current account cash set aside' },
+      ],
+    },
+    next:'step_3_pension_enrolment',
+  },
+
+  step_3_pension_enrolment: {
+    type:'action', step:3, stage:2, badge:'Step 3',
+    title:'Enrol in Your Workplace Pension',
+    intro:'Employer pension matching is effectively free money added to your salary. Missing it is leaving part of your pay on the table.',
+    actions:[
+      { text:'<strong>Check you are auto-enrolled</strong> — if not, opt in immediately through your HR or payroll team' },
+      { text:'<strong>Contribute enough to receive the full employer match</strong> — falling short of the threshold means forgoing free contributions' },
+      { text:'<strong>If self-employed,</strong> consider setting up a SIPP (Self-Invested Personal Pension)' },
+    ],
+    noteText:'Example: if your employer matches up to 5% and you only contribute 3%, you are missing 2% of your salary in free employer contributions every month.',
+    noteType:'info',
+    links:[{ label:'Pensions', url:'https://ukpersonal.finance/pensions/' }],
+    inputPanel:{
+      title:'📊 Add your pension details',
+      fields:[
+        { id:'grossSalary',         label:'Monthly gross salary',              prefix:'£', placeholder:'e.g. 3000' },
+        { id:'employeeContribPct',  label:'Your current contribution',         suffix:'%', placeholder:'e.g. 5', short:true },
+        { id:'employerMaxMatchPct', label:'Maximum employer match available',   suffix:'%', placeholder:'e.g. 5', short:true },
+      ],
+    },
+    next:'step_4_assess_debts',
+  },
+
+  step_4_assess_debts: {
+    type:'question', step:4, stage:3, badge:'Step 4 — Check',
+    question:'Do you have any debt other than a mortgage or student loan?',
+    explanation:'This includes credit cards, personal loans, car finance (PCP or HP), overdrafts, Buy Now Pay Later balances, store cards, and any other consumer debt.',
+    why:'Mortgage and student loan debt are treated differently — they are generally lower-rate or income-contingent. Other consumer debt typically needs a structured repayment plan before longer-term saving begins.',
+    answers:{ yes:'step_4_debt_schedule', no:'step_5_full_emergency_fund' },
+    yesLabel:'Yes, I have other debts', noLabel:'No, only mortgage or student loan',
+  },
+
+  step_4_debt_schedule: {
+    type:'action', step:4, stage:3, badge:'Step 4 — Action',
+    title:'Create a Debt Repayment Schedule',
+    intro:'A structured approach helps you clear debts efficiently while keeping all obligations under control.',
+    actions:[
+      { text:'<strong>List every debt</strong> with balance, interest rate, and minimum monthly payment' },
+      { text:'<strong>Compare interest rates against savings rates</strong> — if debt APR exceeds what savings earn, overpaying debt usually wins' },
+      { text:'<strong>Prioritise overpaying higher-rate debts</strong> while meeting all minimum payments on every other debt' },
+    ],
+    links:[{ label:'Debt repayment', url:'https://ukpersonal.finance/debt/' }],
+    inputPanel:{ type:'debts' },
+    next:'step_5_full_emergency_fund',
+  },
+
+  step_5_full_emergency_fund: {
+    type:'action', step:5, stage:3, badge:'Step 5',
+    title:'Build Your Full Emergency Fund',
+    intro:'Now the foundations are in place. Expand your emergency fund to a level that genuinely protects you from life shocks.',
+    actions:[
+      { text:'<strong>Target 3–6 months</strong> of essential outgoings for most people in stable employment' },
+      { text:'<strong>Consider 6–12 months</strong> if you are self-employed, have variable income, dependants, or health concerns' },
+      { text:'<strong>Keep it in easy-access savings</strong> — prioritise accessibility over maximum return' },
+    ],
+    noteText:'The right amount depends on your circumstances. A stable salaried employee with a partner\'s income as backup needs less than a sole-trader with dependants.',
+    noteType:'info',
+    links:[{ label:'Emergency fund', url:'https://ukpersonal.finance/emergency-fund/' }],
+    next:'step_6_define_goals',
+  },
+
+  step_6_define_goals: {
+    type:'action', step:6, stage:4, badge:'Step 6',
+    title:'Define Your Financial Goals',
+    intro:'You have secured your foundation. Now decide what you are working towards — so surplus money flows toward clear destinations.',
+    actions:[
+      { text:'<strong>Review and update your budget</strong> — with costly debt cleared and a full emergency fund, you likely have more room for discretionary spending' },
+      { text:'<strong>Write down each financial goal</strong> with a specific target amount and target date' },
+      { text:'<strong>Classify each goal:</strong> short-term (within 5 years) or long-term (more than 5 years away)' },
+    ],
+    intro2:'Example goals: first home deposit · holiday · new car · wedding · children\'s education · early retirement · retirement income',
+    links:[
+      { label:'Budgeting', url:'https://ukpersonal.finance/budgeting/' },
+      { label:'Goals', url:'https://ukpersonal.finance/goals/' },
+    ],
+    inputPanel:{ type:'goals' },
+    next:'step_7_short_term_goals',
+  },
+
+  step_7_short_term_goals: {
+    type:'question', step:7, stage:5, badge:'Step 7 — Check',
+    question:'Are your short-term goals (within the next 5 years) currently on track?',
+    explanation:'A goal is on track if you are saving enough each month to reach your target amount by your target date — for example, £20,000 needed in 4 years requires saving roughly £417 per month.',
+    why:'Money needed within 5 years should be kept in cash or near-cash to avoid the risk of a market fall just before you need it. Short-term goals should be funded before long-term investing.',
+    answers:{ yes:'step_8_long_term_intro', no:'step_7_save_for_goals' },
+    yesLabel:'Yes, on track', noLabel:'No, need to save more',
+  },
+
+  step_7_save_for_goals: {
+    type:'action', step:7, stage:5, badge:'Step 7 — Action',
+    title:'Save for Short-Term Goals',
+    intro:'For goals within 5 years, protect your capital from market volatility. Stick to cash-based vehicles.',
+    vehicles:[
+      { name:'Cash LISA', desc:'25% government bonus on up to £4,000/year. Only for first-home deposits (property under £450,000) or retirement. Must be opened before age 40.' },
+      { name:'Easy-access savings accounts', desc:'Maximum flexibility. Best for goals with uncertain timelines or where you may need the money at short notice.' },
+      { name:'Premium Bonds', desc:'Tax-free prize-draw savings backed by the UK government. Returns vary but can be competitive with savings rates.' },
+      { name:'Fixed-rate or notice accounts', desc:'Slightly higher interest in exchange for locking money away for 1–3 years. Suitable if you know the exact timeline.' },
+    ],
+    noteText:'Avoid investment risk for money needed within 5 years — a market fall the year before you need funds could be financially damaging.',
+    noteType:'warn',
+    links:[
+      { label:'Savings accounts', url:'https://ukpersonal.finance/savings/' },
+      { label:'Lifetime ISA', url:'https://ukpersonal.finance/lifetime-isa/' },
+    ],
+    next:'step_8_long_term_intro',
+  },
+
+  step_8_long_term_intro: {
+    type:'info', step:8, stage:5, badge:'Step 8',
+    title:'Long-Term Investing (>5 years)',
+    intro:'You have reached the long-term investing stage — a significant milestone. The right vehicle depends on one key question: when will you need the money relative to pension access age?',
+    bullets:[
+      'Pension access age is currently around 58 (rising from 55 to 57 in 2028, and likely higher in future)',
+      'Money inside a pension cannot normally be accessed before this age without penalty',
+      'Your answer determines whether an ISA, pension, or combination is most suitable',
+    ],
+    next:'q_savings_before_pension_access_age',
+  },
+
+  q_savings_before_pension_access_age: {
+    type:'question', step:8, stage:5, badge:'Step 8 — Check',
+    question:'Do you need access to your savings before pension access age (approximately age 58)?',
+    explanation:'Answer Yes if you plan to retire early, have large purchases planned before age 58, or want to keep flexibility. Answer No if all of your long-term saving is purely for retirement.',
+    why:'This determines whether a pension (locked until ~58) or an ISA (always accessible) is the better long-term wrapper. Locking money into a pension when you need it earlier creates unnecessary constraints.',
+    answers:{ yes:'step_8_pre_pension', no:'q_any_remaining_debt' },
+    yesLabel:'Yes, before age ~58', noLabel:'No, only at or after retirement',
+  },
+
+  step_8_pre_pension: {
+    type:'outcome', step:8, stage:5, badge:'Your Outcome',
+    title:'Invest for Long-Term Goals Before Pension Age',
+    intro:'For long-term goals you will access before pension age, prioritise flexible, tax-efficient wrappers — principally the Stocks & Shares ISA.',
+    vehicles:[
+      { name:'Stocks & Shares ISA', desc:'Primary recommendation. Up to £20,000/year. All growth and income is tax-free. Accessible at any time with no penalty or age restriction.' },
+      { name:'Stocks & Shares LISA', desc:'25% government bonus (max £1,000/year bonus). Only if buying a first home under £450,000. Withdraw for other purposes and you lose the bonus plus face a penalty.' },
+      { name:'General Investment Account (GIA)', desc:'No annual limit. Use once your £20,000 ISA allowance is used up. Capital gains and dividends may be taxable, but the ISA-first priority still applies.' },
+    ],
+    principle:'Invest in low-cost, globally diversified index funds. Keep charges as low as possible.',
+    links:[
+      { label:'Investing 101', url:'https://ukpersonal.finance/investing/' },
+      { label:'ISA', url:'https://ukpersonal.finance/isa/' },
+      { label:'Lifetime ISA', url:'https://ukpersonal.finance/lifetime-isa/' },
+      { label:'Index funds', url:'https://ukpersonal.finance/index-funds/' },
+    ],
+  },
+
+  q_any_remaining_debt: {
+    type:'question', step:8, stage:5, badge:'Step 8 — Check',
+    question:'Do you still have any outstanding debt — such as a mortgage or student loan?',
+    explanation:'At this stage you should have cleared expensive consumer debt. This question is about whether a remaining mortgage or student loan might be worth overpaying versus investing.',
+    why:'Whether to overpay a mortgage or student loan versus investing is a nuanced personal decision. The answer depends on rates, psychology, liquidity needs, and the type of loan.',
+    answers:{ yes:'step_8_assess_overpayment', no:'step_8_post_pension' },
+    yesLabel:'Yes, mortgage or student loan', noLabel:'No remaining debt',
+  },
+
+  step_8_assess_overpayment: {
+    type:'action', step:8, stage:5, badge:'Step 8 — Action',
+    title:'Assess Whether to Overpay Your Debt',
+    intro:'There is no universally right answer here — it depends on interest rates, risk tolerance, and how you feel about debt.',
+    actions:[
+      { text:'<strong>Compare your debt rate against expected investment returns</strong> — if the debt rate exceeds around 3–4%, overpaying may offer a stronger risk-adjusted return' },
+      { text:'<strong>Student loans:</strong> repayment logic depends heavily on your plan type and expected income. Do not simply overpay without checking — the UKPF guide explains this fully' },
+      { text:'<strong>Mortgages:</strong> overpaying reduces risk and interest; investing may offer higher long-term returns. Many people split their surplus between both' },
+    ],
+    links:[
+      { label:'Student loans', url:'https://ukpersonal.finance/student-loans/' },
+      { label:'Mortgage', url:'https://ukpersonal.finance/mortgage/' },
+    ],
+    next:'step_8_post_pension',
+  },
+
+  step_8_post_pension: {
+    type:'outcome', step:8, stage:5, badge:'Your Outcome',
+    title:'Invest for Retirement & Long-Term Goals',
+    intro:'For money you will not need until pension age or later, pension wrappers offer the most powerful tax advantages available in the UK.',
+    vehicles:[
+      { name:'Workplace Pension', desc:'Increase contributions beyond the minimum employer-match level. Contributions reduce your taxable income. Most efficient if your employer offers salary sacrifice.' },
+      { name:'SIPP (Self-Invested Personal Pension)', desc:'Especially valuable for higher-rate (40%+) taxpayers who can claim additional tax relief through Self Assessment. Wide investment choice.' },
+      { name:'Stocks & Shares LISA', desc:'25% government bonus — but note the 25% withdrawal penalty if not used for a first home or retirement. Use with caution and only within the rules.' },
+    ],
+    principle:'Invest in low-cost, globally diversified index funds using the most tax-efficient wrapper for your circumstances.',
+    links:[
+      { label:'Pensions', url:'https://ukpersonal.finance/pensions/' },
+      { label:'ISA', url:'https://ukpersonal.finance/isa/' },
+      { label:'Lifetime ISA', url:'https://ukpersonal.finance/lifetime-isa/' },
+      { label:'Investing 101', url:'https://ukpersonal.finance/investing/' },
+      { label:'Index funds', url:'https://ukpersonal.finance/index-funds/' },
+    ],
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const STORAGE_KEY = 'ukpf_v2';
+let current     = 'start';
+let history     = [];
+let answers     = {};
+let userInputs  = {};
+let metrics     = {};
+let ipOpen      = {};
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ current, history, answers, userInputs, ipOpen, ts: Date.now() }));
+  flashSaved();
+}
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
+}
+function clearState() { localStorage.removeItem(STORAGE_KEY); }
+
+// ═══════════════════════════════════════════════════════════════
+// CALCULATIONS
+// ═══════════════════════════════════════════════════════════════
+function calculateMetrics() {
+  const i = userInputs;
+  metrics = {};
+
+  // Budget
+  if (i.monthlyIncome && +i.monthlyIncome > 0) {
+    metrics.income         = +i.monthlyIncome;
+    metrics.essential      = +i.monthlyEssential      || 0;
+    metrics.savingsCurrent = +i.monthlySavings        || 0;
+    metrics.discretionary  = +i.monthlyDiscretionary  || 0;
+    metrics.total          = metrics.essential + metrics.savingsCurrent + metrics.discretionary;
+    metrics.surplus        = metrics.income - metrics.total;
+    metrics.essRatio       = metrics.income > 0 ? Math.round(metrics.essential / metrics.income * 100) : null;
+    metrics.savingsRatio   = metrics.income > 0 ? Math.round(metrics.savingsCurrent / metrics.income * 100) : 0;
+  }
+
+  // Savings / emergency fund
+  if (i.accessibleSavings !== undefined && i.accessibleSavings !== '') {
+    metrics.savings = +i.accessibleSavings || 0;
+    if (metrics.essential > 0) {
+      metrics.starterMonths = metrics.savings / metrics.essential;
+      metrics.starterGap    = Math.max(0, metrics.essential * 1.5 - metrics.savings);
+      metrics.fullTarget3   = 3 * metrics.essential;
+      metrics.fullTarget6   = 6 * metrics.essential;
+      metrics.fullGap3      = Math.max(0, metrics.fullTarget3 - metrics.savings);
+      metrics.fullGap6      = Math.max(0, metrics.fullTarget6 - metrics.savings);
+    }
+  }
+
+  // Pension
+  if (i.grossSalary && +i.grossSalary > 0 && i.employerMaxMatchPct !== undefined) {
+    const gross   = +i.grossSalary;
+    const maxPct  = +i.employerMaxMatchPct || 0;
+    const empPct  = +i.employeeContribPct  || 0;
+    const capturePct = Math.min(empPct, maxPct);
+    metrics.pensionMaxMonthly    = gross * maxPct / 100;
+    metrics.pensionCaptured      = gross * capturePct / 100;
+    metrics.pensionMissedMonthly = Math.max(0, metrics.pensionMaxMonthly - metrics.pensionCaptured);
+    metrics.pensionMissedAnnual  = metrics.pensionMissedMonthly * 12;
+    metrics.pensionFull          = metrics.pensionMissedMonthly < 1;
+  }
+
+  // Debts
+  const debts = (i.debts || []).filter(d => +d.balance > 0 && +d.apr > 0);
+  if (debts.length > 0) {
+    metrics.highestAPR     = Math.max(...debts.map(d => +d.apr));
+    metrics.monthlyInt     = debts.reduce((s,d) => s + (+d.balance * +d.apr / 1200), 0);
+    metrics.totalDebt      = debts.reduce((s,d) => s + +d.balance, 0);
+    metrics.expensiveDebt  = debts.filter(d => +d.apr > 10).reduce((s,d) => s + +d.balance, 0);
+    metrics.totalMinPmts   = debts.reduce((s,d) => s + (+d.minPayment || 0), 0);
+  }
+
+  // Goals
+  const goals = (i.goals || []).filter(g => g.name && +g.amount > 0 && +g.years > 0);
+  if (goals.length > 0) {
+    metrics.shortGoals   = goals.filter(g => +g.years < 5);
+    metrics.longGoals    = goals.filter(g => +g.years >= 5);
+    metrics.shortTotal   = metrics.shortGoals.reduce((s,g) => s + +g.amount, 0);
+    metrics.longTotal    = metrics.longGoals.reduce((s,g) => s + +g.amount, 0);
+    metrics.shortMonthly = metrics.shortGoals.reduce((s,g) => s + (+g.amount / (+g.years * 12)), 0);
+    metrics.longMonthly  = metrics.longGoals.reduce((s,g)  => s + (+g.amount / (+g.years * 12)), 0);
+    metrics.goalMonthly  = (metrics.shortMonthly || 0) + (metrics.longMonthly || 0);
+    metrics.goalsCount   = goals.length;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INSIGHT CARDS
+// ═══════════════════════════════════════════════════════════════
+function fmt(n) { return Math.round(n).toLocaleString('en-GB'); }
+
+function getInsightCards(nodeId) {
+  const m = metrics;
+  const cards = [];
+
+  if (nodeId === 'step_1_budget') {
+    if (m.income) {
+      if (m.surplus !== undefined) {
+        const type = m.surplus < 0 ? 'ic-critical' : m.surplus < 50 ? 'ic-warning' : 'ic-progress';
+        const sign = m.surplus >= 0 ? '+' : '−';
+        const totalStr = m.total > 0 ? ` — total outgoings: £${fmt(m.total)}/mo` : '';
+        cards.push({ type, label:'Monthly surplus',
+          value:`${sign}£${fmt(Math.abs(m.surplus))}/mo`,
+          text: m.surplus < 0
+            ? `Your outgoings exceed income by £${fmt(Math.abs(m.surplus))}/month${totalStr}. Reducing spending or increasing income is the immediate priority.`
+            : m.surplus < 50
+            ? `Your monthly surplus is very small${totalStr}. Building any buffer will be slow — review spending where possible.`
+            : `Your income covers all outgoings${totalStr}, leaving a surplus to build savings and progress through the steps.` });
+      }
+      if (m.savingsCurrent > 0) {
+        const srType = m.savingsRatio >= 20 ? 'ic-progress' : m.savingsRatio >= 10 ? 'ic-info' : 'ic-neutral';
+        cards.push({ type: srType, label:'Savings rate',
+          value:`${m.savingsRatio}% of income`,
+          text: m.savingsRatio >= 20
+            ? `You are saving ${m.savingsRatio}% of your income — above the 20% rule of thumb. An excellent foundation for long-term wealth.`
+            : m.savingsRatio >= 10
+            ? `You are saving ${m.savingsRatio}% of your income. Increasing towards 20% over time will accelerate your financial goals.`
+            : `You are saving ${m.savingsRatio}% of your income. Even small increases to regular saving make a meaningful difference over time.` });
+      }
+      if (m.essRatio !== null) {
+        cards.push({ type: m.essRatio > 75 ? 'ic-warning' : 'ic-neutral', label:'Essential spending ratio',
+          value:`${m.essRatio}%`,
+          text: m.essRatio > 75 ? 'Your essential costs take up a large share of income, leaving less flexibility. Any surplus is precious.'
+               : 'Your essential spending is a manageable share of income, leaving some room for savings and goals.' });
+      }
+    }
+  }
+
+  if (nodeId === 'step_2_initial_emergency_fund' && m.savings !== undefined) {
+    if (metrics.essential > 0) {
+      const mo = m.starterMonths;
+      cards.push({ type: mo >= 1.5 ? 'ic-progress' : mo >= 0.5 ? 'ic-warning' : 'ic-critical',
+        label:'Emergency fund coverage', value:`${mo.toFixed(1)} months`,
+        text:`You have roughly ${mo.toFixed(1)} months of essential spending accessible. The starter target is 1–3 months.` });
+      if (m.starterGap > 0) {
+        const timeStr = m.surplus > 0 ? ` At your current surplus of £${fmt(m.surplus)}/month, you could reach this in roughly ${Math.ceil(m.starterGap / m.surplus)} months.` : '';
+        cards.push({ type:'ic-info', label:'Gap to starter target', value:`£${fmt(m.starterGap)}`,
+          text:`Your starter emergency fund target (1–1.5 months of essentials) needs an additional £${fmt(m.starterGap)}.${timeStr}` });
+      }
+    } else {
+      cards.push({ type:'ic-neutral', label:'Tip', value:'', text:'Add your monthly essential spending in Step 1 to see how many months your savings cover.' });
+    }
+  }
+
+  if (nodeId === 'step_3_pension_enrolment' && m.pensionMaxMonthly !== undefined) {
+    if (m.pensionFull) {
+      cards.push({ type:'ic-progress', label:'Employer match status', value:'Fully captured ✓',
+        text:`You are receiving the full employer match — approximately £${fmt(m.pensionMaxMonthly)}/month. This is one of the best uses of your salary.` });
+    } else {
+      cards.push({ type:'ic-warning', label:'Missed employer contributions', value:`£${fmt(m.pensionMissedMonthly)}/month`,
+        text:`You may be missing roughly £${fmt(m.pensionMissedMonthly)}/month (£${fmt(m.pensionMissedAnnual)}/year) in employer pension contributions. Increasing your contribution to reach the match threshold addresses this.` });
+    }
+  }
+
+  if ((nodeId === 'step_1_overpay_expensive_debt' || nodeId === 'step_4_debt_schedule') && m.highestAPR) {
+    cards.push({ type: m.highestAPR > 10 ? 'ic-critical' : 'ic-warning', label:'Highest interest rate',
+      value:`${m.highestAPR.toFixed(1)}% APR`,
+      text: m.expensiveDebt > 0 ? `You have approximately £${fmt(m.expensiveDebt)} of debt above 10% APR. This is the highest priority to clear.`
+                                 : 'Your listed debts are below 10% APR. Compare against current savings rates to decide whether overpaying makes sense.' });
+    if (m.monthlyInt > 0) {
+      cards.push({ type:'ic-critical', label:'Estimated monthly interest cost', value:`£${fmt(m.monthlyInt)}/month`,
+        text:`Your debts are costing approximately £${fmt(m.monthlyInt)}/month in interest charges (£${fmt(m.monthlyInt * 12)}/year). Every pound of overpayment reduces this permanently.` });
+    }
+    if (m.totalDebt > 0) {
+      cards.push({ type:'ic-neutral', label:'Total debt listed', value:`£${fmt(m.totalDebt)}`,
+        text:`Total across ${(userInputs.debts||[]).filter(d=>+d.balance>0).length} debt(s). Minimum monthly payments total: £${fmt(m.totalMinPmts)}.` });
+    }
+  }
+
+  if (nodeId === 'step_5_full_emergency_fund' && m.savings !== undefined && m.essential > 0) {
+    const mo = m.savings / m.essential;
+    cards.push({ type: mo >= 3 ? 'ic-progress' : mo >= 1 ? 'ic-warning' : 'ic-critical',
+      label:'Emergency fund coverage', value:`${mo.toFixed(1)} months`,
+      text:`Full target: 3–6 months (£${fmt(m.fullTarget3 || 0)}–£${fmt(m.fullTarget6 || 0)}). You currently have ${mo.toFixed(1)} months covered.` });
+    if (m.fullGap3 > 0) {
+      const timeStr = m.surplus > 0 ? ` At £${fmt(m.surplus)}/month surplus, the 3-month milestone takes roughly ${Math.ceil(m.fullGap3 / m.surplus)} months.` : '';
+      cards.push({ type:'ic-info', label:'Gap to 3-month target', value:`£${fmt(m.fullGap3)}`,
+        text:`An additional £${fmt(m.fullGap3)} gets you to the 3-month milestone.${timeStr}` });
+    }
+  }
+
+  if (nodeId === 'step_6_define_goals' && m.goalsCount > 0) {
+    cards.push({ type:'ic-info', label:'Goals defined', value:`${m.goalsCount}`,
+      text:`${m.shortGoals?.length || 0} short-term (under 5 years) · ${m.longGoals?.length || 0} long-term (5 years or more)` });
+    if (m.shortMonthly > 0) {
+      const feasible = m.surplus > 0 && m.shortMonthly <= m.surplus;
+      cards.push({ type: feasible ? 'ic-progress' : m.surplus > 0 ? 'ic-warning' : 'ic-neutral',
+        label:'Short-term goals — monthly saving needed', value:`£${fmt(m.shortMonthly)}/month`,
+        text: m.surplus > 0
+          ? feasible
+            ? `Your surplus of £${fmt(m.surplus)}/month covers your short-term goal saving.`
+            : `Needs £${fmt(m.shortMonthly)}/month but your surplus is £${fmt(m.surplus)}. Consider extending timelines or reviewing your budget.`
+          : 'Add your income and spending in Step 1 to assess goal feasibility.' });
+    }
+    if (m.longMonthly > 0) {
+      cards.push({ type:'ic-info', label:'Long-term goals — monthly saving needed', value:`£${fmt(m.longMonthly)}/month`,
+        text:`Across ${m.longGoals?.length || 0} long-term goal(s) (5+ years). These are best served by an S&S ISA or pension rather than a cash savings account.` });
+    }
+    if (m.goalMonthly > 0 && m.surplus !== undefined) {
+      const totalFeas = m.goalMonthly <= m.surplus;
+      const pct = m.surplus > 0 ? Math.round(m.goalMonthly / m.surplus * 100) : null;
+      const pctStr = pct !== null ? ` — ${pct}% of your surplus` : '';
+      cards.push({ type: totalFeas ? 'ic-progress' : m.surplus > 0 ? 'ic-warning' : 'ic-neutral',
+        label:'Total goal saving needed', value:`£${fmt(m.goalMonthly)}/month`,
+        text: m.surplus > 0
+          ? totalFeas
+            ? `Combined goals need £${fmt(m.goalMonthly)}/month${pctStr}. Your surplus of £${fmt(m.surplus)}/month covers this.`
+            : `Combined goals need £${fmt(m.goalMonthly)}/month${pctStr} but your surplus is only £${fmt(m.surplus)}/month. Adjusting timelines or amounts will help.`
+          : 'Enter income and spending data in Step 1 to assess overall goal feasibility.' });
+    }
+  }
+
+  return cards;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PERSONALISED OUTCOME CONTENT
+// ═══════════════════════════════════════════════════════════════
+function buildOutcomeIntro(n) {
+  const m = metrics;
+  const a = answers;
+  if (a['q_rely_on_credit_for_essentials'] === 'yes')
+    return 'Note: you flagged reliance on credit for essential expenses — review the critical issues in the analysis below before starting to invest.';
+  if (m.surplus !== undefined && m.surplus < 0)
+    return `Note: your budget shows a monthly deficit of £${fmt(Math.abs(m.surplus))} — close this gap before directing funds to long-term investments.`;
+  if (m.expensiveDebt > 0)
+    return `You still have high-interest debt at ${m.highestAPR?.toFixed(1)}% APR — prioritise clearing this before allocating surplus to the wrappers below.`;
+  if (!m.pensionFull && m.pensionMaxMonthly > 0)
+    return `Ensure you are capturing the full employer pension match (worth £${fmt(m.pensionMissedAnnual || 0)}/year) before directing surplus to other investments.`;
+  if (m.goalMonthly > 0)
+    return `Your goals need £${fmt(m.goalMonthly)}/month in total — allocate this first, then direct remaining surplus to the long-term investing wrappers below.`;
+  return 'Your financial foundations are in good shape — you are now ready to put your surplus to work through long-term investing.';
+}
+
+function buildPersonalisedContent() {
+  const m = metrics;
+  const a = answers;
+
+  // ── A: Financial Snapshot ───────────────────────────────────
+  const hasNumbers = m.income || m.savings !== undefined || m.pensionMaxMonthly !== undefined || m.highestAPR;
+  let snapInner = '';
+  if (!hasNumbers) {
+    snapInner = `<p class="snap-none">No numbers were entered — this summary is based on your Yes / No answers only.</p>`;
+  } else {
+    const items = [];
+    if (m.income)
+      items.push({ label:'Monthly income',    value:`£${fmt(m.income)}`,    cls:'' });
+    if (m.surplus !== undefined) {
+      const sign = m.surplus >= 0 ? '+' : '−';
+      const cls  = m.surplus < 0 ? 'bad' : m.surplus < 100 ? 'warn' : 'good';
+      items.push({ label:'Monthly surplus',   value:`${sign}£${fmt(Math.abs(m.surplus))}`, cls });
+    }
+    if (m.savings !== undefined && m.essential > 0) {
+      const mo  = (m.savings / m.essential).toFixed(1);
+      const cls = m.savings / m.essential >= 3 ? 'good' : m.savings / m.essential >= 1 ? '' : 'bad';
+      items.push({ label:'Emergency fund',    value:`${mo} months`,          cls });
+    }
+    if (m.pensionMaxMonthly !== undefined)
+      items.push({ label:'Pension match',     value: m.pensionFull ? 'Captured ✓' : 'Not fully captured', cls: m.pensionFull ? 'good' : 'bad' });
+    if (m.highestAPR)
+      items.push({ label:'Highest debt APR',  value:`${m.highestAPR.toFixed(1)}%`, cls: m.highestAPR > 10 ? 'bad' : '' });
+    if (m.goalsCount)
+      items.push({ label:'Goals defined',     value:`${m.goalsCount}`,       cls:'' });
+    if (m.goalMonthly > 0)
+      items.push({ label:'Goal saving/mo',    value:`£${fmt(m.goalMonthly)}`, cls:'' });
+    if (m.savingsCurrent > 0)
+      items.push({ label:'Savings rate',      value:`${m.savingsRatio || 0}%`, cls: m.savingsRatio >= 20 ? 'good' : '' });
+    snapInner = `<div class="snap-grid">${items.map(i => `<div class="snap-item"><div class="snap-label">${i.label}</div><div class="snap-value ${i.cls}">${i.value}</div></div>`).join('')}</div>`;
+  }
+  const snapshotHtml = `<div class="outcome-section"><div class="outcome-section-title">Your Financial Snapshot</div>${snapInner}</div>`;
+
+  // ── B: Issues to Address ────────────────────────────────────
+  const flags = [];
+
+  if (a['q_rely_on_credit_for_essentials'] === 'yes')
+    flags.push({ type:'ic-critical',
+      label:'Financial distress detected', value:'Essentials funded on credit',
+      text:'You indicated you are relying on credit cards or loans to pay for essential expenses. This is the highest-priority issue — stabilise your budget before optimising anything else. Seek free debt advice if needed (StepChange, National Debtline).' });
+
+  if (m.surplus !== undefined && m.surplus < 0)
+    flags.push({ type:'ic-critical',
+      label:'Spending exceeds income', value:`−£${fmt(Math.abs(m.surplus))}/month`,
+      text:`Your total spending exceeds income by £${fmt(Math.abs(m.surplus))}/month. Closing this deficit through reduced spending or additional income must come before any saving or investing.` });
+  else if (m.surplus !== undefined && m.surplus >= 0 && m.surplus < 100)
+    flags.push({ type:'ic-warning',
+      label:'Very tight monthly surplus', value:`+£${fmt(m.surplus)}/month`,
+      text:`Your surplus is very small, leaving little margin for unexpected costs or meaningful saving. Review your spending to see whether any discretionary items can be reduced.` });
+
+  if ((a['q_any_debt_over_10_apr'] === 'yes') || (m.expensiveDebt > 0)) {
+    const aprTxt = m.highestAPR ? `${m.highestAPR.toFixed(1)}% APR` : 'over 10% APR';
+    const balTxt = m.expensiveDebt > 0 ? `, £${fmt(m.expensiveDebt)} outstanding` : '';
+    const intTxt = m.monthlyInt > 0 ? ` This costs you £${fmt(m.monthlyInt)}/month (£${fmt(m.monthlyInt * 12)}/year) in interest.` : '';
+    flags.push({ type:'ic-critical',
+      label:'High-interest debt', value: m.highestAPR ? `${m.highestAPR.toFixed(1)}% APR` : 'Over 10% APR',
+      text:`You have debt at ${aprTxt}${balTxt}.${intTxt} Clearing expensive debt delivers a guaranteed return equal to the interest rate — typically higher than safe investment alternatives.` });
+  }
+
+  if (m.starterMonths !== undefined && m.starterMonths < 1.5) {
+    const gapTxt = m.starterGap > 0 ? ` — you need £${fmt(m.starterGap)} more` : '';
+    flags.push({ type:'ic-warning',
+      label:'Starter emergency fund below target', value:`${m.starterMonths.toFixed(1)} months covered`,
+      text:`Your starter emergency fund covers ${m.starterMonths.toFixed(1)} months of essentials${gapTxt}. Build this to at least 1.5 months before prioritising other goals.` });
+  }
+
+  if (!m.pensionFull && m.pensionMaxMonthly > 0)
+    flags.push({ type:'ic-warning',
+      label:'Employer pension match not fully captured', value:`£${fmt(m.pensionMissedMonthly)}/month unclaimed`,
+      text:`You may be missing approximately £${fmt(m.pensionMissedMonthly)}/month (£${fmt(m.pensionMissedAnnual)}/year) in employer pension contributions — effectively a pay rise going uncollected. Increasing your employee contribution to the match threshold typically takes priority over all other investing.` });
+
+  if (m.fullGap3 > 0 && (m.starterMonths === undefined || m.starterMonths >= 1.5))
+    flags.push({ type:'ic-info',
+      label:'Full emergency fund not yet reached', value:`£${fmt(m.fullGap3)} to 3-month target`,
+      text:`Your 3-month emergency fund target is £${fmt(m.fullTarget3)}. Building this buffer provides resilience against job loss, large repairs, or health events before you invest surplus income long-term.` });
+
+  if (m.goalMonthly > 0 && m.surplus > 0 && m.goalMonthly > m.surplus * 0.9)
+    flags.push({ type:'ic-warning',
+      label:'Total goal saving may exceed available surplus', value:`£${fmt(m.goalMonthly)}/month required`,
+      text:`Your combined goals need £${fmt(m.goalMonthly)}/month (${Math.round(m.goalMonthly / m.surplus * 100)}% of your surplus). Consider extending timelines, reducing amounts, or reviewing your budget to free up more room.` });
+  else if (m.shortMonthly > 0 && m.surplus > 0 && m.shortMonthly > m.surplus * 0.8)
+    flags.push({ type:'ic-warning',
+      label:'Short-term goal saving is high relative to surplus', value:`£${fmt(m.shortMonthly)}/month required`,
+      text:`Your short-term goals need £${fmt(m.shortMonthly)}/month but your surplus is £${fmt(m.surplus)}/month. Consider extending some timelines, reducing goal amounts, or reviewing your budget to create more room.` });
+
+  if (a['q_any_remaining_debt'] === 'yes')
+    flags.push({ type:'ic-info',
+      label:'Mortgage or student loan still outstanding', value:'Overpayment vs investing decision ahead',
+      text:'Whether to overpay a mortgage or student loan versus investing is a nuanced personal decision that depends on the interest rate, loan type, your risk tolerance, and liquidity needs. Review the UKPF guidance for a full explanation.' });
+
+  let issueCards = flags.length === 0
+    ? `<div class="ic ic-progress"><div class="ic-label">Assessment complete</div><div class="ic-value">No critical issues identified</div><div class="ic-text">Your foundations are in good shape. The investment strategy below is the appropriate next focus.</div></div>`
+    : flags.map(f => `<div class="ic ${f.type}"><div class="ic-label">${f.label}</div><div class="ic-value">${f.value}</div><div class="ic-text">${f.text}</div></div>`).join('');
+
+  const issuesHtml = `<div class="outcome-section"><div class="outcome-section-title">Issues to Address</div><div class="insight-wrap" style="margin-top:0">${issueCards}</div></div>`;
+
+  // ── C: Priority Action Plan ─────────────────────────────────
+  const actions = [];
+
+  if (a['q_rely_on_credit_for_essentials'] === 'yes')
+    actions.push('Stabilise essential spending — stop relying on credit for food, rent, and bills. Seek free debt advice if needed.');
+  if (m.surplus !== undefined && m.surplus < 0)
+    actions.push(`Close your monthly deficit of £${fmt(Math.abs(m.surplus))} — reduce spending or increase income before saving anything.`);
+  if ((a['q_any_debt_over_10_apr'] === 'yes') || (m.expensiveDebt > 0)) {
+    const aprTxt = m.highestAPR ? ` (${m.highestAPR.toFixed(1)}% APR)` : '';
+    actions.push(`Clear high-interest debt${aprTxt} using the avalanche method (highest APR first). This is your best guaranteed return.`);
+  }
+  if (m.starterMonths !== undefined && m.starterMonths < 1.5)
+    actions.push(`Build your starter emergency fund — save £${fmt(m.starterGap || 0)} more to reach the 1.5-month target.`);
+  if (!m.pensionFull && m.pensionMaxMonthly > 0)
+    actions.push(`Increase pension contributions to capture the full employer match — worth £${fmt(m.pensionMissedAnnual)}/year.`);
+  if (m.fullGap3 > 0 && (m.starterMonths === undefined || m.starterMonths >= 1.5))
+    actions.push(`Build your emergency fund to the 3-month target — save £${fmt(m.fullGap3)} more (target: £${fmt(m.fullTarget3)}).`);
+  if (m.shortMonthly > 0 && (m.surplus === undefined || m.shortMonthly <= m.surplus))
+    actions.push(`Save £${fmt(m.shortMonthly)}/month for your short-term goals (under 5 years).`);
+  if (m.longMonthly > 0)
+    actions.push(`Save £${fmt(m.longMonthly)}/month for your long-term goals (5+ years) — consider an S&S ISA or pension wrapper.`);
+
+  const outcomeNode = NODES[current];
+  if (outcomeNode && outcomeNode.title)
+    actions.push(`Begin long-term investing: ${outcomeNode.title} — see the wrappers below.`);
+
+  const priorityHtml = `<div class="outcome-section"><div class="outcome-section-title">Your Priority Action Plan</div><div class="priority-list">${actions.map((text, i) => `<div class="priority-item"><div class="priority-num">${i + 1}</div><div>${text}</div></div>`).join('')}</div></div>`;
+
+  return snapshotHtml + issuesHtml + priorityHtml;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PDF PRINT REPORT
+// ═══════════════════════════════════════════════════════════════
+function buildPrintReport(nodeId, n) {
+  const m = metrics;
+  const a = answers;
+  const dateStr = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+
+  // ── Key numbers grid ──────────────────────────────────────────
+  const numItems = [];
+  if (m.income)                                    numItems.push({ l:'Monthly income',    v:`£${fmt(m.income)}` });
+  if (m.surplus !== undefined)                      numItems.push({ l:'Monthly surplus',   v:`${m.surplus >= 0 ? '+' : '−'}£${fmt(Math.abs(m.surplus))}` });
+  if (m.savingsCurrent > 0)                         numItems.push({ l:'Savings rate',      v:`${m.savingsRatio || 0}% of income` });
+  if (m.savings !== undefined && m.essential > 0)   numItems.push({ l:'Emergency fund',    v:`${(m.savings / m.essential).toFixed(1)} months` });
+  if (m.pensionMaxMonthly !== undefined)             numItems.push({ l:'Pension match',     v: m.pensionFull ? 'Captured ✓' : 'Not fully captured' });
+  if (m.highestAPR)                                 numItems.push({ l:'Highest debt APR',  v:`${m.highestAPR.toFixed(1)}%` });
+  if (m.goalsCount)                                 numItems.push({ l:'Goals defined',     v:`${m.goalsCount}` });
+  if (m.goalMonthly > 0)                            numItems.push({ l:'Goal saving/month', v:`£${fmt(m.goalMonthly)}` });
+
+  const numHtml = numItems.length
+    ? numItems.map(i => `<div class="pr-num-item"><span class="pr-num-label">${i.l}</span><span class="pr-num-val">${i.v}</span></div>`).join('')
+    : `<div class="pr-num-item"><span class="pr-num-label">No numbers entered</span><span class="pr-num-val">—</span></div>`;
+
+  // ── Income allocation bar (printed inline) ────────────────────
+  let allocHtml = '';
+  if (m.income > 0) {
+    const segs = [
+      { label:'Essential', amt:m.essential||0,           color:'#e1b5b5' },
+      { label:'Savings',   amt:m.savingsCurrent||0,      color:'#bfd7a6' },
+      { label:'Other',     amt:m.discretionary||0,       color:'#d4d4d4' },
+      { label:'Surplus',   amt:Math.max(0,m.surplus||0), color:'#dfead5' },
+    ].filter(s => s.amt > 0);
+    if (segs.length) {
+      allocHtml = `<div style="margin-top:6px;margin-bottom:3px;">${buildAllocBar(segs, m.income, { barHeight:'22px', barFont:'7pt', labelFont:'7pt', border:'1px solid #ddd', threshold:0.1 })}</div>`;
+    }
+  }
+
+  // ── Stage sections ────────────────────────────────────────────
+  const stages = [
+    {
+      band:'#e1b5b5', bg:'rgba(239,208,208,0.18)',
+      label:'Stage A — Budget & Foundations',
+      desc:'Create a budget, pay essential bills, make minimum debt payments, insure key assets.',
+      metrics:[
+        m.income             ? `Monthly income: £${fmt(m.income)}`         : null,
+        m.surplus !== undefined ? `Monthly surplus: ${m.surplus >= 0 ? '+' : '−'}£${fmt(Math.abs(m.surplus))}` : null,
+        m.essential > 0      ? `Essential spending: £${fmt(m.essential)}/mo` : null,
+        m.savingsCurrent > 0 ? `Regular savings: £${fmt(m.savingsCurrent)}/mo` : null,
+        m.essRatio != null   ? `Essential ratio: ${m.essRatio}% of income`  : null,
+      ].filter(Boolean),
+      flags:[
+        a['q_rely_on_credit_for_essentials'] === 'yes' ? 'Relying on credit for essential expenses' : null,
+        m.surplus !== undefined && m.surplus < 0 ? `Monthly deficit: −£${fmt(Math.abs(m.surplus))}` : null,
+      ].filter(Boolean),
+      flagType: 'critical',
+    },
+    {
+      band:'#e7d08a', bg:'rgba(243,227,173,0.18)',
+      label:'Stage B — Emergency Fund & Pension',
+      desc:'Build a starter 1–3 month emergency fund. Enrol in workplace pension and capture the full employer match.',
+      metrics:[
+        m.savings !== undefined          ? `Accessible savings: £${fmt(m.savings)}` : null,
+        m.savings !== undefined && m.essential > 0 ? `Emergency fund: ${(m.savings / m.essential).toFixed(1)} months` : null,
+        m.pensionMaxMonthly !== undefined ? `Employer match available: £${fmt(m.pensionMaxMonthly)}/mo` : null,
+        m.pensionCaptured > 0            ? `Currently capturing: £${fmt(m.pensionCaptured)}/mo` : null,
+      ].filter(Boolean),
+      flags:[
+        m.starterMonths !== undefined && m.starterMonths < 1.5 ? `Below starter EF target (${m.starterMonths.toFixed(1)} months — gap: £${fmt(m.starterGap)})` : null,
+        !m.pensionFull && m.pensionMaxMonthly > 0 ? `Pension match not fully captured — £${fmt(m.pensionMissedMonthly)}/mo unclaimed` : null,
+      ].filter(Boolean),
+      flagType: 'warning',
+    },
+    {
+      band:'#bfd7a6', bg:'rgba(219,234,203,0.18)',
+      label:'Stage C — Debt Review & Full Emergency Fund',
+      desc:'Clear all debt above 10% APR. Build emergency fund to 3–6 months of essential spending.',
+      metrics:[
+        m.highestAPR                ? `Highest APR: ${m.highestAPR.toFixed(1)}%`  : null,
+        m.expensiveDebt > 0         ? `High-interest debt (>10%): £${fmt(m.expensiveDebt)}` : null,
+        m.totalDebt > 0             ? `Total debt: £${fmt(m.totalDebt)}` : null,
+        m.monthlyInt > 0            ? `Monthly interest cost: £${fmt(m.monthlyInt)}` : null,
+        m.fullTarget3 > 0           ? `Full EF target (3 months): £${fmt(m.fullTarget3)}` : null,
+      ].filter(Boolean),
+      flags:[
+        (a['q_any_debt_over_10_apr'] === 'yes' || m.expensiveDebt > 0) ? `High-interest debt (${m.highestAPR ? m.highestAPR.toFixed(1) + '% APR' : 'over 10%'}) outstanding` : null,
+        m.fullGap3 > 0 ? `Full emergency fund gap: £${fmt(m.fullGap3)} to 3-month target` : null,
+      ].filter(Boolean),
+      flagType: 'critical',
+    },
+    {
+      band:'#bfd2ea', bg:'rgba(220,232,246,0.18)',
+      label:'Stage D — Review Budget & Define Goals',
+      desc:'Reassess and optimise your budget. Define financial goals and classify by time horizon.',
+      metrics:[
+        m.goalsCount                ? `Goals defined: ${m.goalsCount}` : null,
+        m.shortGoals?.length        ? `Short-term goals (< 5 yrs): ${m.shortGoals.length}` : null,
+        m.longGoals?.length         ? `Long-term goals (≥ 5 yrs): ${m.longGoals.length}` : null,
+        m.shortMonthly > 0          ? `Monthly saving — short-term goals: £${fmt(m.shortMonthly)}` : null,
+        m.longMonthly > 0           ? `Monthly saving — long-term goals: £${fmt(m.longMonthly)}` : null,
+        m.goalMonthly > 0           ? `Total goal saving/month: £${fmt(m.goalMonthly)}` : null,
+      ].filter(Boolean),
+      flags:[
+        m.goalMonthly > 0 && m.surplus > 0 && m.goalMonthly > m.surplus * 0.9 ? `Total goal saving (£${fmt(m.goalMonthly)}/mo) exceeds 90% of surplus` : null,
+      ].filter(Boolean),
+      flagType: 'warning',
+      // Goals detail table
+      goalsTable: (() => {
+        const allGoals = [...(m.shortGoals||[]), ...(m.longGoals||[])];
+        if (!allGoals.length) return '';
+        const rows = allGoals.map(g => {
+          const mo = +g.amount / (+g.years * 12);
+          const type = +g.years >= 5 ? 'Long-term' : 'Short-term';
+          return `<tr>
+            <td style="padding:3px 6px;border-bottom:1px solid #eee;font-size:8.5pt">${g.name || '—'}</td>
+            <td style="padding:3px 6px;border-bottom:1px solid #eee;font-size:8.5pt;text-align:center">${type}</td>
+            <td style="padding:3px 6px;border-bottom:1px solid #eee;font-size:8.5pt;text-align:right">£${fmt(+g.amount)}</td>
+            <td style="padding:3px 6px;border-bottom:1px solid #eee;font-size:8.5pt;text-align:right">${g.years} yr</td>
+            <td style="padding:3px 6px;border-bottom:1px solid #eee;font-size:8.5pt;text-align:right;font-weight:700">£${fmt(mo)}/mo</td>
+          </tr>`;
+        }).join('');
+        const stTot = m.shortMonthly > 0 ? `Short-term: £${fmt(m.shortMonthly)}/mo` : '';
+        const ltTot = m.longMonthly  > 0 ? `Long-term: £${fmt(m.longMonthly)}/mo`  : '';
+        const totLine = [stTot, ltTot].filter(Boolean).join('  ·  ');
+        return `<table style="width:100%;border-collapse:collapse;margin-top:6px;">
+          <thead><tr>
+            <th style="font-size:8pt;font-weight:600;color:#666;text-align:left;padding:3px 6px;border-bottom:2px solid #ddd;">Goal</th>
+            <th style="font-size:8pt;font-weight:600;color:#666;text-align:center;padding:3px 6px;border-bottom:2px solid #ddd;">Type</th>
+            <th style="font-size:8pt;font-weight:600;color:#666;text-align:right;padding:3px 6px;border-bottom:2px solid #ddd;">Target</th>
+            <th style="font-size:8pt;font-weight:600;color:#666;text-align:right;padding:3px 6px;border-bottom:2px solid #ddd;">Years</th>
+            <th style="font-size:8pt;font-weight:600;color:#666;text-align:right;padding:3px 6px;border-bottom:2px solid #ddd;">Monthly</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+          ${totLine ? `<tfoot><tr><td colspan="5" style="font-size:8pt;color:#444;padding:4px 6px;border-top:1px solid #ddd;">${totLine}</td></tr></tfoot>` : ''}
+        </table>`;
+      })(),
+    },
+    {
+      band:'#c2b4e4', bg:'rgba(221,212,242,0.18)',
+      label:'Stage E — Long-Term Investing',
+      desc:'Allocate long-term savings into the most tax-efficient wrapper for your situation.',
+      metrics:[
+        n ? `Outcome: ${n.title}` : null,
+        n && n.vehicles ? `Wrappers: ${n.vehicles.map(v => v.name).join(' · ')}` : null,
+      ].filter(Boolean),
+      flags:[
+        a['q_any_remaining_debt'] === 'yes' ? 'Consider mortgage / student loan overpayment vs. investing — see UKPF guidance for nuance' : null,
+      ].filter(Boolean),
+      flagType: 'info',
+    },
+  ];
+
+  const stagesHtml = stages.map((s, idx) => {
+    const flagColor = { critical:'#c97b7b', warning:'#c7aa53', info:'#90aac8' }[s.flagType] || '#c8c8c8';
+    const flagBg    = { critical:'#fff0f0', warning:'#fffbec', info:'#f0f6ff'  }[s.flagType] || '#f9f9f9';
+    return `
+    <div class="pr-stage" style="border-left-color:${s.band};background:${s.bg}">
+      <div class="pr-stage-header">${s.label}</div>
+      <div class="pr-stage-desc">${s.desc}</div>
+      ${s.metrics.length ? `<div class="pr-metrics">${s.metrics.map(x => `<span class="pr-metric">${x}</span>`).join('')}</div>` : ''}
+      ${s.flags.length   ? `<div class="pr-flags">${s.flags.map(x => `<div class="pr-flag" style="border-left-color:${flagColor};background:${flagBg}">${x}</div>`).join('')}</div>` : ''}
+      ${s.goalsTable ? s.goalsTable : ''}
+    </div>${idx < stages.length - 1 ? '<div class="pr-connector"></div>' : ''}`;
+  }).join('');
+
+  // ── Priority actions ──────────────────────────────────────────
+  const acts = [];
+  if (a['q_rely_on_credit_for_essentials'] === 'yes')
+    acts.push('Stabilise essential spending — stop relying on credit for food, rent, and bills');
+  if (m.surplus !== undefined && m.surplus < 0)
+    acts.push(`Close monthly deficit of £${fmt(Math.abs(m.surplus))} before saving anything`);
+  if ((a['q_any_debt_over_10_apr'] === 'yes') || m.expensiveDebt > 0)
+    acts.push(`Clear high-interest debt${m.highestAPR ? ' (' + m.highestAPR.toFixed(1) + '% APR)' : ''} — highest guaranteed return available`);
+  if (m.starterMonths !== undefined && m.starterMonths < 1.5)
+    acts.push(`Build starter emergency fund to 1.5 months (save £${fmt(m.starterGap || 0)} more)`);
+  if (!m.pensionFull && m.pensionMaxMonthly > 0)
+    acts.push(`Capture full employer pension match — worth £${fmt(m.pensionMissedAnnual || 0)}/year`);
+  if (m.fullGap3 > 0 && (m.starterMonths === undefined || m.starterMonths >= 1.5))
+    acts.push(`Build full emergency fund to 3-month target (£${fmt(m.fullGap3)} remaining)`);
+  if (m.shortMonthly > 0)
+    acts.push(`Save £${fmt(m.shortMonthly)}/month for short-term goals`);
+  if (m.longMonthly > 0)
+    acts.push(`Save £${fmt(m.longMonthly)}/month for long-term goals via S&S ISA or pension`);
+  if (n) acts.push(`Begin long-term investing: ${n.title}`);
+
+  const actsHtml = acts.length
+    ? acts.map((t, i) => `<div class="pr-action-item"><span class="pr-action-num">${i + 1}</span>${t}</div>`).join('')
+    : '<div style="font-size:9pt;color:#555">No priority actions identified — your foundations are in good shape.</div>';
+
+  // ── Investment vehicles ───────────────────────────────────────
+  const vehiclesHtml = n && n.vehicles
+    ? n.vehicles.map(v => `<div class="pr-vehicle"><div class="pr-vehicle-name">${v.name}</div><div class="pr-vehicle-desc">${v.desc}</div></div>`).join('')
+    : '';
+
+  document.getElementById('printReport').innerHTML = `
+    <div class="pr-header">
+      <div class="pr-logo">£</div>
+      <div>
+        <div class="pr-title">UK Personal Finance Flowchart</div>
+        <div class="pr-subtitle">Your Personal Financial Action Plan</div>
+        <div class="pr-meta">Generated ${dateStr} &nbsp;·&nbsp; UKPF Flowchart v3.0.10 &nbsp;·&nbsp; For information only — not financial advice</div>
+      </div>
+    </div>
+
+    <div class="pr-section-title">Your Key Numbers</div>
+    <div class="pr-num-grid">${numHtml}</div>
+    ${allocHtml}
+
+    <div class="pr-section-title">Journey Through the Flowchart</div>
+    ${stagesHtml}
+
+    <div class="pr-section-title">Your Priority Action Plan</div>
+    <div class="pr-actions">${actsHtml}</div>
+
+    <div class="pr-section-title">Your Investment Strategy: ${n ? n.title : 'Long-Term Investing'}</div>
+    <div class="pr-vehicles">${vehiclesHtml}</div>
+    ${n && n.principle ? `<div class="pr-principle"><strong>Key principle:</strong> ${n.principle}</div>` : ''}
+
+    <div class="pr-disclaimer">
+      This document is for information and education only. It is not personal financial advice and should not be treated as such.
+      Always do your own research and consider taking regulated advice for complex decisions.<br>
+      Based on the <strong>UK Personal Finance Flowchart v3.0.10</strong> — licensed under CC BY-NC-SA 4.0.
+      Visit <strong>ukpersonal.finance</strong> for the complete resource.
+    </div>`;
+}
+
+function downloadReport() {
+  const n = NODES[current];
+  buildPrintReport(current, n);
+  window.print();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function goTo(nodeId, answer) {
+  if (answer !== undefined) answers[current] = answer;
+  history.push(current);
+  current = nodeId;
+  render();
+  saveState();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBack() {
+  if (!history.length) return;
+  current = history.pop();
+  render();
+  saveState();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function confirmRestart() {
+  if (current === 'start' || confirm('Start over from the beginning?')) {
+    clearState();
+    current = 'start'; history = []; answers = {}; userInputs = {}; metrics = {}; ipOpen = {};
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════════════════════════════
+const NODE_SEQ = [
+  'start','step_1_budget','q_rely_on_credit_for_essentials',
+  'step_1_crisis_support','q_any_debt_over_10_apr','step_1_overpay_expensive_debt',
+  'step_2_initial_emergency_fund','step_3_pension_enrolment',
+  'step_4_assess_debts','step_4_debt_schedule',
+  'step_5_full_emergency_fund','step_6_define_goals',
+  'step_7_short_term_goals','step_7_save_for_goals',
+  'step_8_long_term_intro','q_savings_before_pension_access_age',
+  'step_8_pre_pension','q_any_remaining_debt','step_8_assess_overpayment','step_8_post_pension',
+];
+
+function getProgress() {
+  const n = NODES[current];
+  if (n && n.type === 'outcome') return 100;
+  const i = NODE_SEQ.indexOf(current);
+  return i < 0 ? 0 : Math.round(i / (NODE_SEQ.length - 1) * 95);
+}
+
+function stepStatuses() {
+  const vis = new Set([...history, current]);
+  const curStep = (NODES[current]?.step) || 0;
+  const isOut   = NODES[current]?.type === 'outcome';
+  return STEPS.reduce((acc, s) => {
+    const nodesBelonging = Object.entries(NODES).filter(([,n]) => n.step === s.id).map(([id]) => id);
+    const anyVisited = nodesBelonging.some(id => vis.has(id));
+    if (isOut)          acc[s.id] = 'done';
+    else if (curStep > s.id) acc[s.id] = 'done';
+    else if (curStep === s.id) acc[s.id] = 'active';
+    else acc[s.id] = anyVisited ? 'done' : 'locked';
+    return acc;
+  }, {});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SHARED RENDER HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+// Render a list of insight cards to an HTML string
+function renderCardList(cards) {
+  return cards.map(c => `
+    <div class="ic ${c.type}">
+      <div class="ic-label">${c.label}</div>
+      ${c.value ? `<div class="ic-value">${c.value}</div>` : ''}
+      <div class="ic-text">${c.text}</div>
+    </div>`).join('');
+}
+
+// Build a stacked allocation bar (screen or print) from segments array
+// Each seg: { label, amt, color }
+function buildAllocBar(segs, total, opts) {
+  const { barHeight='34px', barFont='10px', labelFont='9px', border='1px solid var(--border)', threshold=0.08 } = opts || {};
+  const bars = segs.map(s => {
+    const pct = (s.amt / total * 100).toFixed(1);
+    return `<div style="flex:${s.amt};background:${s.color};height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:${barFont};font-weight:600;color:#333;padding:0 3px;white-space:nowrap;" title="${s.label}: £${fmt(s.amt)} (${pct}%)">${(s.amt / total) > threshold ? `£${fmt(s.amt)}` : ''}</div>`;
+  }).join('');
+  const labels = segs.map(s =>
+    `<div style="flex:${s.amt};text-align:center;font-size:${labelFont};color:var(--text-muted,#666);white-space:nowrap;overflow:hidden;">${(s.amt / total) > threshold ? s.label : ''}</div>`
+  ).join('');
+  return `<div style="display:flex;height:${barHeight};border-radius:4px;overflow:hidden;border:${border};margin-bottom:3px;">${bars}</div><div style="display:flex;margin-bottom:8px;">${labels}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SVG HELPERS
+// ═══════════════════════════════════════════════════════════════
+const arrowSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+const backSVG  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`;
+const checkSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+const extSVG   = `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+// ═══════════════════════════════════════════════════════════════
+// COMPONENT PARTIALS
+// ═══════════════════════════════════════════════════════════════
+function wikiLinks(links) {
+  if (!links?.length) return '';
+  return `<div class="wiki-section"><div class="wiki-label">Further reading on UKPF</div><div class="wiki-links">
+    ${links.map(l => `<a class="wiki-link" href="${l.url}" target="_blank" rel="noopener">${extSVG}${l.label}</a>`).join('')}
+  </div></div>`;
+}
+
+function actionItems(actions) {
+  return `<div class="action-list">${actions.map(a => `
+    <div class="action-item">
+      <div class="action-tick">${checkSVG}</div>
+      <div class="action-text">${a.text}</div>
+    </div>`).join('')}</div>`;
+}
+
+function vehicleItems(vehicles) {
+  return `<div class="vehicle-list">${vehicles.map(v => `
+    <div class="vehicle-item">
+      <div class="vehicle-name">${v.name}</div>
+      <div class="vehicle-desc">${v.desc}</div>
+    </div>`).join('')}</div>`;
+}
+
+function noteBox(text, type='info') {
+  if (!text) return '';
+  const icon = type === 'warn'
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+  return `<div class="note note-${type}">${icon}<span>${text}</span></div>`;
+}
+
+function backBtn() {
+  return history.length ? `<button class="btn-back" onclick="goBack()">${backSVG} Back</button>` : '';
+}
+
+function continueBtn(nodeId, label, crisis) {
+  return `<button class="btn-continue${crisis ? ' btn-crisis' : ''}" onclick="goTo('${nodeId}')">${label || 'Mark complete &amp; continue'} ${arrowSVG}</button>`;
+}
+
+// Input panel HTML
+function renderInputPanel(nodeId) {
+  const n = NODES[nodeId];
+  if (!n?.inputPanel) return '';
+  const ip = n.inputPanel;
+  const open = !!ipOpen[nodeId];
+
+  if (ip.type === 'debts')  return renderDebtPanel(nodeId, open);
+  if (ip.type === 'goals')  return renderGoalPanel(nodeId, open);
+
+  const fields = ip.fields.map(f => {
+    const val = userInputs[f.id] !== undefined ? userInputs[f.id] : '';
+    const cls = `ip-field${f.short ? ' short' : ''}`;
+    const prefix = f.prefix ? `<span class="ip-prefix">${f.prefix}</span>` : '';
+    const suffix = f.suffix ? `<span class="ip-suffix">${f.suffix}</span>` : '';
+    const input  = `<input type="number" class="${cls}" data-iid="${f.id}" value="${val}" placeholder="${f.placeholder||''}" min="0" step="any">`;
+    const note   = f.note ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">${f.note}</div>` : '';
+    return `<div class="ip-field-row"><div class="ip-label">${f.label}${note}</div><div class="ip-field-wrap">${prefix}${input}${suffix}</div></div>`;
+  }).join('');
+
+  const cards = getInsightCards(nodeId);
+  const cardsHtml = `<div class="insight-wrap" id="ic-${nodeId}">${renderCardList(cards)}</div>`;
+
+  return `<div class="ip-wrap">
+    <div class="ip-header${open ? ' open' : ''}" id="iph-${nodeId}" data-nid="${nodeId}">
+      <div class="ip-header-title">${ip.title}</div>
+      <span class="ip-chevron">▼</span>
+    </div>
+    <div class="ip-body${open ? ' open' : ''}" id="ipb-${nodeId}">
+      ${fields}
+      ${cardsHtml}
+    </div>
+  </div>`;
+}
+
+function renderDebtPanel(nodeId, open) {
+  const debts = userInputs.debts || [];
+  const rows = debts.map((d, i) => `
+    <tr>
+      <td><input class="debt-field wide" data-di="${i}" data-df="type" value="${d.type||''}" placeholder="Credit card"></td>
+      <td><input type="number" class="debt-field" data-di="${i}" data-df="balance" value="${d.balance||''}" placeholder="0" min="0"></td>
+      <td><input type="number" class="debt-field" data-di="${i}" data-df="apr" value="${d.apr||''}" placeholder="0" min="0" step="0.1"></td>
+      <td><input type="number" class="debt-field" data-di="${i}" data-df="minPayment" value="${d.minPayment||''}" placeholder="0" min="0"></td>
+      <td><button class="btn-del" data-del="${i}">✕</button></td>
+    </tr>`).join('');
+
+  const cards = getInsightCards(nodeId);
+  const cardsHtml = `<div class="insight-wrap" id="ic-${nodeId}">${renderCardList(cards)}</div>`;
+
+  return `<div class="ip-wrap">
+    <div class="ip-header${open ? ' open' : ''}" id="iph-${nodeId}" data-nid="${nodeId}">
+      <div class="ip-header-title">📊 Add your debts (optional)</div>
+      <span class="ip-chevron">▼</span>
+    </div>
+    <div class="ip-body${open ? ' open' : ''}" id="ipb-${nodeId}">
+      <table class="debt-table">
+        <thead><tr><th>Type</th><th>Balance £</th><th>APR %</th><th>Min. pmnt £</th><th></th></tr></thead>
+        <tbody id="debt-rows-${nodeId}">${rows}</tbody>
+      </table>
+      <button class="btn-add-debt" data-add="debt" data-nid="${nodeId}">+ Add a debt</button>
+      ${cardsHtml}
+    </div>
+  </div>`;
+}
+
+function renderGoalsChart() {
+  const m = metrics;
+  if (!m.income || m.income <= 0) return '';
+
+  const ess  = m.essential      || 0;
+  const sav  = m.savingsCurrent || 0;
+  const disc = m.discretionary  || 0;
+  const surp = Math.max(0, m.surplus || 0);
+  const total = m.income;
+
+  // Build segments — only non-zero ones
+  const segs = [
+    { label:'Essential', amt:ess,  color:'#e1b5b5' },
+    { label:'Savings',   amt:sav,  color:'#bfd7a6' },
+    { label:'Other',     amt:disc, color:'#d4d4d4' },
+    { label:'Surplus',   amt:surp, color:'#dfead5' },
+  ].filter(s => s.amt > 0);
+
+  if (segs.length === 0) return '';
+
+  const allocBar = buildAllocBar(segs, total);
+
+  // Individual goal rows
+  const allGoals = [...(m.shortGoals || []), ...(m.longGoals || [])];
+  const goalRows = allGoals.length ? `
+    <div class="goals-alloc-subtitle">Goal breakdown — monthly saving needed</div>
+    ${allGoals.map(g => {
+      const mo = +g.amount / (+g.years * 12);
+      const isLong = +g.years >= 5;
+      const pillCls   = isLong ? 'g-long'    : 'g-short';
+      const pillLabel = isLong ? 'Long-term' : 'Short-term';
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+        <span class="goal-horizon-pill ${pillCls}" style="flex-shrink:0">${pillLabel}</span>
+        <span style="font-size:11px;color:var(--text-secondary);flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${g.name || '(unnamed)'}</span>
+        <span style="font-size:11px;font-weight:600;color:var(--text-primary);white-space:nowrap;">£${fmt(mo)}/mo</span>
+      </div>`;
+    }).join('')}` : '';
+
+  return `<div class="goals-alloc-chart">
+    <div class="goals-alloc-title">Income allocation — £${fmt(total)}/mo total</div>
+    ${allocBar}
+    ${goalRows}
+  </div>`;
+}
+
+function renderGoalPanel(nodeId, open) {
+  const goals = userInputs.goals || [];
+  const rows = goals.map((g, i) => {
+    const yrs = +g.years;
+    const amt = +g.amount;
+    const typePill = yrs >= 5 ? '<span class="goal-horizon-pill g-long">Long-term</span>'
+                   : yrs > 0  ? '<span class="goal-horizon-pill g-short">Short-term</span>' : '';
+    const mo = (amt > 0 && yrs > 0) ? `£${fmt(amt / (yrs * 12))}/mo` : '—';
+    const moCls = (amt > 0 && yrs > 0) ? 'goal-monthly-cell' : 'goal-monthly-cell blank';
+    return `<tr>
+      <td><input class="goal-field gf-name" data-gi="${i}" data-gf="name" value="${g.name||''}" placeholder="e.g. House deposit"></td>
+      <td><input type="number" class="goal-field gf-amt" data-gi="${i}" data-gf="amount" value="${g.amount||''}" placeholder="0" min="0"></td>
+      <td><input type="number" class="goal-field gf-yrs" data-gi="${i}" data-gf="years" value="${g.years||''}" placeholder="5" min="0.5" step="0.5"></td>
+      <td>${typePill}</td>
+      <td class="${moCls}">${mo}</td>
+      <td><button class="btn-del" data-gdel="${i}">✕</button></td>
+    </tr>`;
+  }).join('');
+
+  const cards = getInsightCards(nodeId);
+  const cardsHtml = `<div class="insight-wrap" id="ic-${nodeId}">${renderCardList(cards)}</div>`;
+
+  return `<div class="ip-wrap">
+    <div class="ip-header${open ? ' open' : ''}" id="iph-${nodeId}" data-nid="${nodeId}">
+      <div class="ip-header-title">📊 Add your financial goals</div>
+      <span class="ip-chevron">▼</span>
+    </div>
+    <div class="ip-body${open ? ' open' : ''}" id="ipb-${nodeId}">
+      <table class="goal-table">
+        <thead><tr><th>Goal name</th><th>Amount £</th><th>Years</th><th title="Goals under 5 years are Short-term; 5+ years are Long-term">Type ⓘ</th><th>Monthly needed</th><th></th></tr></thead>
+        <tbody id="goal-rows-${nodeId}">${rows}</tbody>
+      </table>
+      <button class="btn-add-goal" data-add="goal" data-nid="${nodeId}">+ Add a goal</button>
+      ${cardsHtml}
+      <div id="gc-${nodeId}"></div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NODE RENDERERS
+// ═══════════════════════════════════════════════════════════════
+function renderStart(n, sg) {
+  const stageColors = [
+    { cls:'sg1', bg:'var(--s1-fill)' }, { cls:'sg2', bg:'var(--s2-fill)' }, { cls:'sg3', bg:'var(--s3-fill)' },
+    { cls:'sg4', bg:'var(--s4-fill)' }, { cls:'sg5', bg:'var(--s5-fill)' },
+  ];
+  const pills = STEPS.map((s, i) => {
+    const sc = stageColors[Math.min(STEP_STAGE[s.id] - 1, 4)];
+    return `<div class="ss-item">
+      <span class="ss-num ${sc.cls}" style="background:var(--band)">${s.id}</span>${s.name}</div>`;
+  }).join('');
+  return `<div class="card card-plain sg0">
+    <h1 class="card-title" style="font-size:22px;margin-bottom:8px">Your Financial Journey Starts Here</h1>
+    <p class="card-intro">This interactive tool guides you through the UK Personal Finance flowchart — a community-trusted, step-by-step framework for getting your finances in order. Answer a few questions about your situation and receive a personalised action plan.</p>
+    <div class="start-steps-grid">${pills}</div>
+    <div class="disclaimer-box"><strong>Important:</strong> This tool is for information and education only. It is not personal financial advice. Always do your own research and consider regulated advice for complex or high-stakes decisions.</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <button class="btn-continue sg1" style="--band:var(--s1-band);--sborder:var(--s1-border)" onclick="goTo('step_1_budget')">Begin your journey ${arrowSVG}</button>
+      <span style="font-size:11px;color:var(--text-muted)">Progress saves automatically</span>
+    </div>
+    <div class="card-footer">Based on the <a href="https://ukpersonal.finance/flowchart/" target="_blank">UK Personal Finance Flowchart</a> v3.0.10 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a></div>
+  </div>`;
+}
+
+function renderAction(n, sg) {
+  const isCrisis = !!n.crisis;
+  return `<div class="card ${sg}${isCrisis ? ' card-crisis' : ''}">
+    ${backBtn()}
+    <div class="stage-badge">${n.badge}</div>
+    <h2 class="card-title">${n.title}</h2>
+    <p class="card-intro">${n.intro}</p>
+    ${n.actions ? actionItems(n.actions) : ''}
+    ${n.vehicles ? vehicleItems(n.vehicles) : ''}
+    ${n.charities ? `<div class="charity-list">${n.charities.map(c => `<a class="charity-link" href="${c.url}" target="_blank" rel="noopener"><span class="charity-icon">${c.icon}</span><div><div style="font-weight:600">${c.name}</div><div style="font-size:11px;color:var(--text-muted)">${c.sub}</div></div></a>`).join('')}</div>` : ''}
+    ${n.noteText ? noteBox(n.noteText, n.noteType || 'info') : ''}
+    ${isCrisis ? `<div class="note note-crit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12.01" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg><span>Once your situation has stabilised, continue through the flowchart.</span></div>` : ''}
+    ${n.intro2 ? `<p class="card-intro2">${n.intro2}</p>` : ''}
+    ${wikiLinks(n.links)}
+    ${renderInputPanel(n.type === 'action' ? Object.entries(NODES).find(([,node]) => node === n)[0] : '')}
+    <div class="nav-row">${continueBtn(n.next, isCrisis ? 'Understood, continue' : undefined, isCrisis)}</div>
+    ${renderFooterNote()}
+  </div>`;
+}
+
+function renderActionById(nodeId, sg) {
+  const n = NODES[nodeId];
+  const isCrisis = !!n.crisis;
+  return `<div class="card ${sg}${isCrisis ? ' card-crisis' : ''}">
+    ${backBtn()}
+    <div class="stage-badge">${n.badge}</div>
+    <h2 class="card-title">${n.title}</h2>
+    <p class="card-intro">${n.intro}</p>
+    ${n.actions ? actionItems(n.actions) : ''}
+    ${n.vehicles ? vehicleItems(n.vehicles) : ''}
+    ${n.charities ? `<div class="charity-list">${n.charities.map(c => `<a class="charity-link" href="${c.url}" target="_blank" rel="noopener"><span class="charity-icon">${c.icon}</span><div><div style="font-weight:600">${c.name}</div><div style="font-size:11px;color:var(--text-muted)">${c.sub}</div></div></a>`).join('')}</div>` : ''}
+    ${n.noteText ? noteBox(n.noteText, n.noteType || 'info') : ''}
+    ${isCrisis ? `<div class="note note-crit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12.01" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg><span>Once your situation has stabilised, continue through the flowchart.</span></div>` : ''}
+    ${n.intro2 ? `<p class="card-intro2">${n.intro2}</p>` : ''}
+    ${wikiLinks(n.links)}
+    ${renderInputPanel(nodeId)}
+    <div class="nav-row">${continueBtn(n.next, isCrisis ? 'Understood, continue' : undefined, isCrisis)}</div>
+    ${renderFooterNote()}
+  </div>`;
+}
+
+function renderInfo(nodeId, n, sg) {
+  const bullets = n.bullets || [];
+  return `<div class="card ${sg}">
+    ${backBtn()}
+    <div class="stage-badge">${n.badge}</div>
+    <h2 class="card-title">${n.title}</h2>
+    <p class="card-intro">${n.intro}</p>
+    ${bullets.length ? `<ul style="margin:0 0 18px 18px;display:flex;flex-direction:column;gap:7px;">${bullets.map(b => `<li style="font-size:13px;color:var(--text-secondary);line-height:1.55">${b}</li>`).join('')}</ul>` : ''}
+    ${wikiLinks(n.links)}
+    <div class="nav-row">${continueBtn(n.next, 'Continue')}</div>
+    ${renderFooterNote()}
+  </div>`;
+}
+
+function renderQuestion(nodeId, n, sg) {
+  const hasWhy = !!n.why;
+  return `<div class="card ${sg}">
+    ${backBtn()}
+    <div class="stage-badge">${n.badge}</div>
+    <p class="q-text"><span class="q-diamond"></span>${n.question}</p>
+    <div class="q-expl">${n.explanation}</div>
+    ${hasWhy ? `<button class="why-toggle" id="wt-${nodeId}" onclick="toggleWhy('${nodeId}')"><span class="why-arrow">▶</span> Why does this matter?</button><div class="why-body" id="wb-${nodeId}">${n.why}</div>` : ''}
+    <div class="answer-grid">
+      <button class="answer-btn" onclick="goTo('${n.answers.yes}','yes')">
+        <span class="answer-icon">✓</span>
+        <span class="answer-label">Yes</span>
+        <span class="answer-sub">${n.yesLabel || ''}</span>
+      </button>
+      <button class="answer-btn" onclick="goTo('${n.answers.no}','no')">
+        <span class="answer-icon">✗</span>
+        <span class="answer-label">No</span>
+        <span class="answer-sub">${n.noLabel || ''}</span>
+      </button>
+    </div>
+    ${wikiLinks(n.links)}
+    ${renderFooterNote()}
+  </div>`;
+}
+
+function renderOutcome(nodeId, n, sg) {
+  const personalised = buildPersonalisedContent();
+  const introNote    = buildOutcomeIntro(n);
+
+  return `<div class="card ${sg}">
+    ${backBtn()}
+    <div class="outcome-header">
+      <div class="outcome-check">✓</div>
+      <div class="stage-badge">${n.badge}</div>
+    </div>
+    <h2 class="card-title" style="text-align:center">${n.title}</h2>
+    <p class="card-intro" style="text-align:center">${n.intro}</p>
+    <div class="ic ic-info" style="margin-bottom:18px;font-size:12px;line-height:1.55">${introNote}</div>
+
+    ${personalised}
+
+    <div class="outcome-vehicles-label">Your Investment Wrappers</div>
+    ${vehicleItems(n.vehicles)}
+    <div class="principle-box"><strong style="font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)">Key principle</strong><br>${n.principle}</div>
+    ${wikiLinks(n.links)}
+    <div class="nav-row">
+      <button class="btn-start-over" onclick="confirmRestart()">↺ Start over</button>
+      <button class="btn-download" onclick="downloadReport()">⬇ Download Report</button>
+    </div>
+    ${renderFooterNote()}
+  </div>`;
+}
+
+function renderFooterNote() {
+  if (current === 'start') return '';
+  return `<div class="card-footer">For information only — not personal financial advice. Always do your own research.<br>
+    <a href="https://ukpersonal.finance/flowchart/" target="_blank">UKPF Flowchart v3.0.10</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SIDEBAR & TRAIL
+// ═══════════════════════════════════════════════════════════════
+function renderSidebar() {
+  const statuses = stepStatuses();
+  const items = STEPS.map((s, i) => {
+    const st = statuses[s.id] || 'locked';
+    const stage = STEP_STAGE[s.id];
+    const sg = STAGE_CLASS[stage];
+    const num = st === 'done' ? '✓' : s.id;
+    const sub = st === 'active' && NODES[current] ? (NODES[current].title || NODES[current].question || '').slice(0, 34) : '';
+    const conn = i < STEPS.length - 1 ? '<div class="step-connector"></div>' : '';
+    return `<div class="step-row">
+      <div class="step-item ${st} ${sg}" ${st !== 'done' ? '' : 'onclick="void(0)"'}>
+        <div class="step-circle">${num}</div>
+        <div>
+          <div class="step-label">${s.name}</div>
+          ${sub ? `<div style="font-size:11px;color:var(--text-muted)">${sub}${sub.length>=34?'…':''}</div>` : ''}
+        </div>
+      </div></div>${conn}`;
+  }).join('');
+  document.getElementById('stepList').innerHTML = items;
+  renderTrail();
+}
+
+function renderTrail() {
+  const m = metrics;
+
+  // Surplus display
+  const surpVal = m.surplus !== undefined ? `${m.surplus >= 0 ? '+' : '−'}£${fmt(Math.abs(m.surplus))}` : null;
+  const surpCls = m.surplus !== undefined ? (m.surplus < 0 ? 'bad' : m.surplus < 100 ? 'warn' : 'good') : '';
+
+  // Emergency fund
+  const efRaw = m.savings !== undefined && m.essential > 0 ? m.savings / m.essential : null;
+  const efVal = efRaw !== null ? `${efRaw.toFixed(1)} months` : null;
+  const efCls = efRaw !== null ? (efRaw >= 3 ? 'good' : efRaw >= 1 ? '' : 'bad') : '';
+
+  // Pension
+  const penVal = m.pensionMaxMonthly !== undefined ? (m.pensionFull ? 'Captured' : 'Missing') : null;
+  const penCls = m.pensionMaxMonthly !== undefined ? (m.pensionFull ? 'good' : 'bad') : '';
+
+  // Goals monthly
+  const gmVal = m.goalMonthly > 0 ? `£${fmt(m.goalMonthly)}/mo` : null;
+  const gmCls = m.goalMonthly > 0 && m.surplus > 0 ? (m.goalMonthly <= m.surplus ? 'good' : 'warn') : '';
+
+  // Build rows with divider markers
+  const items = [
+    { key:'Monthly income',   val: m.income   ? `£${fmt(m.income)}`  : null, cls:'' },
+    { key:'Monthly surplus',  val: surpVal, cls: surpCls },
+    { divider: true },
+    { key:'Emergency fund',   val: efVal,   cls: efCls },
+    { key:'Pension match',    val: penVal,  cls: penCls },
+    { divider: true },
+    { key:'Highest APR',      val: m.highestAPR ? `${m.highestAPR.toFixed(1)}%` : null,  cls: m.highestAPR > 10 ? 'bad' : '' },
+    { key:'Monthly interest', val: m.monthlyInt > 0 ? `£${fmt(m.monthlyInt)}/mo` : null, cls: m.monthlyInt > 0 ? 'bad' : '' },
+    { key:'Total debt',       val: m.totalDebt > 0 ? `£${fmt(m.totalDebt)}` : null,      cls: '' },
+    { divider: true },
+    { key:'Goals defined',    val: m.goalsCount ? `${m.goalsCount}` : null, cls: m.goalsCount ? 'good' : '' },
+    { key:'Goal saving/mo',   val: gmVal,   cls: gmCls },
+  ];
+
+  const html = items.map(r => {
+    if (r.divider) return `<hr class="sb-divider" style="margin:5px 0">`;
+    return `<div class="trail-row">
+      <span class="trail-key">${r.key}</span>
+      <span class="trail-val ${r.val ? r.cls : 'none'}">${r.val || '—'}</span>
+    </div>`;
+  }).join('');
+
+  const el = document.getElementById('journeyTrail');
+  if (el) el.innerHTML = html;
+}
+
+function renderMobileBar() {
+  const statuses = stepStatuses();
+  document.getElementById('mobileBar').innerHTML = STEPS.map(s => {
+    const st = statuses[s.id] || 'locked';
+    const sg = STAGE_CLASS[STEP_STAGE[s.id]];
+    const num = st === 'done' ? '✓' : s.id;
+    return `<div class="ms-pill ${st} ${sg}"><div class="ms-num">${num}</div>${s.short}</div>`;
+  }).join('');
+  const active = document.querySelector('.ms-pill.active');
+  if (active) active.scrollIntoView({ inline:'center', behavior:'smooth' });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOPBAR UPDATER
+// ═══════════════════════════════════════════════════════════════
+const STAGE_BAND_COLORS = { 1:'#e1b5b5', 2:'#e7d08a', 3:'#bfd7a6', 4:'#bfd2ea', 5:'#c2b4e4' };
+
+function renderTopbar() {
+  const n      = NODES[current];
+  const topbar = document.querySelector('.topbar');
+  const sigil  = document.querySelector('.topbar-sigil');
+  const sub    = document.querySelector('.topbar-sub');
+  const bar    = document.getElementById('progressBar');
+  if (!topbar) return;
+
+  if (!n || n.type === 'start' || current === 'start') {
+    // Default brand state
+    topbar.style.borderBottom = '';
+    if (sigil) { sigil.style.background = ''; sigil.style.color = ''; }
+    if (sub)   sub.textContent = 'Interactive Flowchart · v3.0.10';
+    if (bar)   bar.style.background = '';
+  } else {
+    const color = STAGE_BAND_COLORS[n.stage] || '#c8c8c8';
+    topbar.style.borderBottom = `2px solid ${color}`;
+    if (sigil) { sigil.style.background = color; sigil.style.color = 'var(--text-primary)'; }
+    if (sub)   sub.textContent = n.badge || `Step ${n.step || ''}`;
+    if (bar)   bar.style.background = color;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════════════════════════════════
+function render() {
+  const n = NODES[current];
+  if (!n) return;
+  const sg = STAGE_CLASS[n.stage] || 'sg0';
+
+  let html = '';
+  if (n.type === 'start')    html = renderStart(n, sg);
+  else if (n.type === 'question') html = renderQuestion(current, n, sg);
+  else if (n.type === 'info')     html = renderInfo(current, n, sg);
+  else if (n.type === 'outcome')  html = renderOutcome(current, n, sg);
+  else html = renderActionById(current, sg);  // action, warning
+
+  document.getElementById('cardMount').innerHTML = html;
+  document.getElementById('progressBar').style.width = getProgress() + '%';
+  renderTopbar();
+  renderSidebar();
+  renderMobileBar();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOGGLE WHY
+// ═══════════════════════════════════════════════════════════════
+function toggleWhy(nodeId) {
+  const btn  = document.getElementById(`wt-${nodeId}`);
+  const body = document.getElementById(`wb-${nodeId}`);
+  if (!btn || !body) return;
+  const open = body.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SAVED TOAST
+// ═══════════════════════════════════════════════════════════════
+let saveTimer;
+function flashSaved() {
+  const el = document.getElementById('savedToast');
+  el.classList.add('show');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INPUT PANEL TOGGLE
+// ═══════════════════════════════════════════════════════════════
+function updateInsightCards(nodeId) {
+  calculateMetrics();
+  const ic = document.getElementById(`ic-${nodeId}`);
+  if (!ic) return;
+  const cards = getInsightCards(nodeId);
+  ic.innerHTML = renderCardList(cards);
+  // Refresh goals allocation chart if present
+  const gc = document.getElementById(`gc-${nodeId}`);
+  if (gc) gc.innerHTML = renderGoalsChart();
+  renderTrail();
+  // Debounce localStorage writes to avoid hammering on rapid keystrokes
+  clearTimeout(updateInsightCards._saveTimer);
+  updateInsightCards._saveTimer = setTimeout(saveState, 500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EVENT DELEGATION
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('click', e => {
+  // Input panel header toggle
+  const iph = e.target.closest('[id^="iph-"]');
+  if (iph) {
+    const nid = iph.dataset.nid;
+    if (!nid) return;
+    ipOpen[nid] = !ipOpen[nid];
+    iph.classList.toggle('open', !!ipOpen[nid]);
+    const body = document.getElementById(`ipb-${nid}`);
+    if (body) body.classList.toggle('open', !!ipOpen[nid]);
+    return;
+  }
+
+  // Add debt row
+  if (e.target.dataset.add === 'debt') {
+    userInputs.debts = userInputs.debts || [];
+    userInputs.debts.push({ type:'', balance:'', apr:'', minPayment:'' });
+    const nid = e.target.dataset.nid;
+    ipOpen[nid] = true;
+    render();
+    // re-open panel after render
+    const body = document.getElementById(`ipb-${nid}`);
+    const hdr  = document.getElementById(`iph-${nid}`);
+    if (body) { body.classList.add('open'); }
+    if (hdr)  { hdr.classList.add('open'); }
+    return;
+  }
+
+  // Delete debt row
+  if (e.target.dataset.del !== undefined) {
+    const idx = +e.target.dataset.del;
+    userInputs.debts.splice(idx, 1);
+    calculateMetrics();
+    render();
+    const nid = current;
+    ipOpen[nid] = true;
+    const body = document.getElementById(`ipb-${nid}`);
+    const hdr  = document.getElementById(`iph-${nid}`);
+    if (body) body.classList.add('open');
+    if (hdr)  hdr.classList.add('open');
+    saveState();
+    return;
+  }
+
+  // Add goal row
+  if (e.target.dataset.add === 'goal') {
+    userInputs.goals = userInputs.goals || [];
+    userInputs.goals.push({ name:'', amount:'', years:'' });
+    const nid = e.target.dataset.nid;
+    ipOpen[nid] = true;
+    render();
+    const body = document.getElementById(`ipb-${nid}`);
+    const hdr  = document.getElementById(`iph-${nid}`);
+    if (body) body.classList.add('open');
+    if (hdr)  hdr.classList.add('open');
+    return;
+  }
+
+  // Delete goal row
+  if (e.target.dataset.gdel !== undefined) {
+    const idx = +e.target.dataset.gdel;
+    userInputs.goals.splice(idx, 1);
+    calculateMetrics();
+    render();
+    const nid = current;
+    ipOpen[nid] = true;
+    const body = document.getElementById(`ipb-${nid}`);
+    const hdr  = document.getElementById(`iph-${nid}`);
+    if (body) body.classList.add('open');
+    if (hdr)  hdr.classList.add('open');
+    saveState();
+    return;
+  }
+});
+
+document.addEventListener('input', e => {
+  // Standard input panel fields
+  const iid = e.target.dataset.iid;
+  if (iid) {
+    userInputs[iid] = e.target.value;
+    updateInsightCards(current);
+    return;
+  }
+
+  // Debt field input
+  const di = e.target.dataset.di;
+  const df = e.target.dataset.df;
+  if (di !== undefined && df) {
+    userInputs.debts = userInputs.debts || [];
+    while (userInputs.debts.length <= +di) userInputs.debts.push({});
+    userInputs.debts[+di][df] = e.target.value;
+    updateInsightCards(current);
+    return;
+  }
+
+  // Goal field input
+  const gi = e.target.dataset.gi;
+  const gf = e.target.dataset.gf;
+  if (gi !== undefined && gf) {
+    userInputs.goals = userInputs.goals || [];
+    while (userInputs.goals.length <= +gi) userInputs.goals.push({});
+    userInputs.goals[+gi][gf] = e.target.value;
+    // Live-update Type pill and Monthly needed column
+    const row = e.target.closest('tr');
+    if (row) {
+      const g    = userInputs.goals[+gi];
+      const yrs  = +g.years;
+      const amt  = +g.amount;
+      if (gf === 'years') {
+        const typeTd = row.querySelector('td:nth-child(4)');
+        if (typeTd) typeTd.innerHTML = yrs >= 5 ? '<span class="goal-horizon-pill g-long">Long-term</span>'
+                                      : yrs > 0  ? '<span class="goal-horizon-pill g-short">Short-term</span>' : '';
+      }
+      if (gf === 'amount' || gf === 'years') {
+        const moTd = row.querySelector('td:nth-child(5)');
+        if (moTd) {
+          if (amt > 0 && yrs > 0) {
+            moTd.className = 'goal-monthly-cell';
+            moTd.textContent = `£${fmt(amt / (yrs * 12))}/mo`;
+          } else {
+            moTd.className = 'goal-monthly-cell blank';
+            moTd.textContent = '—';
+          }
+        }
+      }
+    }
+    updateInsightCards(current);
+    return;
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// RESUME BANNER
+// ═══════════════════════════════════════════════════════════════
+function showResumeBanner(saved) {
+  const nd = NODES[saved.current];
+  if (!nd || saved.current === 'start') return;
+  const label = (nd.title || nd.question || saved.current).slice(0, 50);
+  const ts = saved.ts ? new Date(saved.ts).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+  document.getElementById('resumeWrap').innerHTML = `
+    <div class="resume-banner">
+      <div class="resume-text">
+        <p>Continue where you left off?</p>
+        <span>${label} · ${ts}</span>
+      </div>
+      <div class="resume-btns">
+        <button class="btn-resume primary" onclick="doResume()">Resume</button>
+        <button class="btn-resume secondary" onclick="dismissResume()">Start fresh</button>
+      </div>
+    </div>`;
+}
+
+function doResume() {
+  document.getElementById('resumeWrap').innerHTML = '';
+}
+
+function dismissResume() {
+  clearState();
+  current = 'start'; history = []; answers = {}; userInputs = {}; metrics = {}; ipOpen = {};
+  document.getElementById('resumeWrap').innerHTML = '';
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+(function init() {
+  const saved = loadState();
+  if (saved && saved.current && saved.current !== 'start' && NODES[saved.current]) {
+    // Show start first, then resume banner
+    render();
+    // Load saved state
+    history    = saved.history    || [];
+    answers    = saved.answers    || {};
+    userInputs = saved.userInputs || {};
+    ipOpen     = saved.ipOpen     || {};
+    current    = saved.current;
+    // Backward-compat: migrate monthlyTotal → monthlyDiscretionary
+    if (userInputs.monthlyTotal && !userInputs.monthlyDiscretionary) {
+      const total = +userInputs.monthlyTotal;
+      const ess   = +userInputs.monthlyEssential || 0;
+      const sav   = +userInputs.monthlySavings   || 0;
+      userInputs.monthlyDiscretionary = String(Math.max(0, total - ess - sav));
+    }
+    calculateMetrics();
+    showResumeBanner(saved);
+  } else {
+    render();
+  }
+})();
+</script>
+</body>
+</html>

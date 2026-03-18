@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Personal Finance Flowchart — Your Path from Budget to Investor</title>
+  <meta name="description" content="An interactive 8-step guide to UK personal finance. From your first budget to your long-term investment strategy — personalised to your numbers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..700&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET & TOKENS
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --s1:  #e1b5b5; --s1f: #efd0d0; --s1b: #c99696;
+      --s2:  #e7d08a; --s2f: #f3e3ad; --s2b: #c9af63;
+      --s3:  #bfd7a6; --s3f: #dbeacb; --s3b: #98b07f;
+      --s4:  #bfd2ea; --s4f: #dce8f6; --s4b: #98b2cf;
+      --s5:  #c2b4e4; --s5f: #ddd4f2; --s5b: #9f95c6;
+
+      --ink:    #1f1f1f;
+      --ink2:   #444444;
+      --ink3:   #767676;
+      --border: #c8c8c8;
+      --bg:     #f4f4ef;
+      --white:  #ffffff;
+      --font:   'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --r:      12px;
+      --r-lg:   18px;
+    }
+
+    body {
+      font-family: var(--font);
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ═══════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════ */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(200,200,200,0.6);
+      padding: 0 clamp(20px, 5vw, 80px);
+      display: flex; align-items: center; justify-content: space-between;
+      height: 58px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-sigil {
+      width: 30px; height: 30px; background: var(--ink); color: white;
+      border-radius: 7px; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800; flex-shrink: 0; line-height: 1;
+      padding-bottom: 1px;
+    }
+    .nav-text-name  { font-size: 13px; font-weight: 700; color: var(--ink); }
+    .nav-text-sub   { font-size: 10px; color: var(--ink3); font-weight: 500; }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+    }
+    .nav-link {
+      font-size: 13px; font-weight: 500; color: var(--ink2);
+      transition: color 140ms;
+    }
+    .nav-link:hover { color: var(--ink); }
+    .btn-launch-sm {
+      background: var(--ink); color: white; border: none;
+      border-radius: 8px; padding: 8px 18px; cursor: pointer;
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: opacity 140ms, transform 120ms;
+    }
+    .btn-launch-sm:hover { opacity: 0.88; transform: translateY(-1px); }
+    @media (max-width: 640px) { .nav-links { display: none; } }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      min-height: calc(100vh - 58px);
+      display: flex; align-items: center;
+      padding: clamp(48px, 7vh, 80px) clamp(20px, 5vw, 80px);
+      gap: clamp(32px, 5vw, 72px);
+      position: relative; overflow: hidden;
+    }
+    /* Subtle glow blobs */
+    .hero::before {
+      content: ''; position: absolute;
+      top: -160px; right: -120px; width: 650px; height: 650px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(194,180,228,0.32) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: ''; position: absolute;
+      bottom: -80px; left: -80px; width: 480px; height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(225,181,181,0.28) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .hero-left {
+      flex: 1; max-width: 560px; position: relative; z-index: 1;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--s5f); border: 1px solid var(--s5b);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 12px; font-weight: 600; color: #3e2d7a; margin-bottom: 24px;
+    }
+    .hero-eyebrow-dot { width: 6px; height: 6px; background: var(--s5); border-radius: 50%; }
+
+    h1 {
+      font-size: clamp(38px, 5.2vw, 64px);
+      font-weight: 900; line-height: 1.07;
+      letter-spacing: -0.035em; color: var(--ink);
+      margin-bottom: 22px;
+    }
+    .h1-underline {
+      position: relative; display: inline-block; white-space: nowrap;
+    }
+    .h1-underline::after {
+      content: ''; position: absolute;
+      bottom: 3px; left: -2px; right: -2px; height: 10px;
+      background: var(--s1); border-radius: 4px; z-index: -1; opacity: 0.75;
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 1.6vw, 18px); color: var(--ink2);
+      line-height: 1.7; margin-bottom: 36px; max-width: 500px;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+
+    .btn-hero {
+      background: var(--ink); color: white; border: none;
+      border-radius: 10px; padding: 14px 28px;
+      font-family: var(--font); font-size: 15px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 8px;
+      cursor: pointer; transition: transform 150ms, box-shadow 150ms;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.14);
+    }
+    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 7px 22px rgba(0,0,0,0.2); }
+
+    .btn-hero-ghost {
+      background: white; color: var(--ink);
+      border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 13px 22px;
+      font-family: var(--font); font-size: 14px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 8px;
+      cursor: pointer; transition: border-color 150ms, box-shadow 150ms;
+    }
+    .btn-hero-ghost:hover { border-color: #888; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+
+    .hero-stats { display: flex; gap: 36px; }
+    .hero-stat { flex: none; }
+    .hero-stat-num  { font-size: 28px; font-weight: 900; color: var(--ink); line-height: 1; letter-spacing: -0.02em; }
+    .hero-stat-label{ font-size: 11px; color: var(--ink3); font-weight: 600; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .hero-stat-div  { width: 1px; background: var(--border); align-self: stretch; flex: none; }
+
+    /* ── Hero card mockup ── */
+    .hero-right {
+      flex: 1; max-width: 540px; position: relative; z-index: 1;
+    }
+    .hero-float-badge {
+      position: absolute; top: -14px; right: 20px;
+      background: white; border: 1px solid var(--border);
+      border-radius: 100px; padding: 6px 14px;
+      font-size: 11px; font-weight: 600; color: var(--ink2);
+      display: flex; align-items: center; gap: 7px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .float-pulse {
+      width: 7px; height: 7px; background: #5dbb4a; border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.6; transform: scale(0.8); }
+    }
+
+    .card-mockup {
+      background: white; border-radius: 16px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.13), 0 4px 16px rgba(0,0,0,0.07);
+      overflow: hidden;
+      animation: floatCard 7s ease-in-out infinite;
+    }
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33%       { transform: translateY(-6px) rotate(0.3deg); }
+      66%       { transform: translateY(-3px) rotate(-0.2deg); }
+    }
+
+    /* Mock topbar */
+    .mock-topbar {
+      background: white; border-bottom: 1px solid #ebebeb;
+      padding: 9px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .mock-brand { display: flex; align-items: center; gap: 7px; }
+    .mock-sigil {
+      width: 24px; height: 24px; background: var(--ink); color: white;
+      border-radius: 5px; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; flex-shrink: 0;
+    }
+    .mock-brand-name { font-size: 10px; font-weight: 700; color: var(--ink); }
+    .mock-brand-sub  { font-size: 9px; color: var(--ink3); }
+    .mock-restart-btn {
+      background: #f5f5f5; border: 1px solid #e0e0e0;
+      border-radius: 4px; padding: 3px 8px;
+      font-family: var(--font); font-size: 9px; color: var(--ink3);
+      cursor: default;
+    }
+
+    /* Mock progress bar */
+    .mock-prog-wrap { height: 3px; background: #f0f0f0; }
+    .mock-prog-bar  {
+      height: 100%; background: var(--s4); width: 72%;
+      transition: width 1.5s ease;
+    }
+
+    /* Mock body */
+    .mock-body { display: flex; min-height: 320px; }
+
+    /* Mock sidebar */
+    .mock-sb {
+      width: 136px; background: #fafafa; border-right: 1px solid #ebebeb;
+      padding: 12px 8px; flex-shrink: 0;
+    }
+    .mock-sb-label {
+      font-size: 8px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--ink3);
+      padding-left: 4px; margin-bottom: 6px;
+    }
+    .mock-step-item {
+      display: flex; align-items: center; gap: 5px;
+      padding: 4px 4px; border-radius: 5px; margin-bottom: 1px;
+    }
+    .mock-step-item.done   { opacity: 0.6; }
+    .mock-step-item.active { background: var(--s5f); }
+    .mock-step-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700; flex-shrink: 0;
+    }
+    .dot-done { background: #1f1f1f; color: white; }
+    .dot-active { background: var(--s5); color: #2d1f5e; }
+    .dot-future { background: #e0e0e0; color: #999; }
+    .mock-step-name { font-size: 8.5px; font-weight: 500; color: var(--ink2); line-height: 1.3; }
+
+    .mock-divider { height: 1px; background: #e8e8e8; margin: 8px 0; }
+    .mock-nums-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 2px 4px;
+    }
+    .mock-nk  { font-size: 8px; color: var(--ink3); }
+    .mock-nv  { font-size: 8px; font-weight: 700; color: var(--ink); }
+    .mock-nv.good { color: #1e6b12; }
+    .mock-nv.warn { color: #7a4800; }
+
+    /* Mock main area */
+    .mock-main { flex: 1; padding: 14px; overflow: hidden; }
+    .mock-band {
+      height: 4px; background: var(--s5);
+      border-radius: 2px; margin: -14px -14px 12px;
+    }
+    .mock-badge {
+      display: inline-block; background: var(--s5f);
+      border: 1px solid var(--s5b); border-radius: 100px;
+      padding: 2px 9px; font-size: 8px; font-weight: 700; color: #3e2d7a;
+      margin-bottom: 7px;
+    }
+    .mock-title { font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 5px; line-height: 1.25; }
+    .mock-intro { font-size: 8.5px; color: var(--ink2); line-height: 1.45; margin-bottom: 10px; }
+
+    .mock-table {
+      width: 100%; border-collapse: collapse; font-size: 8px;
+      margin-bottom: 8px;
+    }
+    .mock-table th {
+      font-size: 7.5px; font-weight: 600; color: var(--ink3);
+      padding: 2px 5px; border-bottom: 1.5px solid #e0e0e0;
+      text-align: left;
+    }
+    .mock-table th:not(:first-child) { text-align: right; }
+    .mock-table td {
+      padding: 3px 5px; border-bottom: 1px solid #f0f0f0;
+      color: var(--ink2); font-size: 8px;
+    }
+    .mock-table td:not(:first-child) { text-align: right; }
+    .mock-table .monthly-cell { font-weight: 700; color: var(--ink); }
+    .mock-pill-short {
+      display: inline-block; background: var(--s4f); border: 1px solid var(--s4b);
+      border-radius: 3px; padding: 1px 4px; font-size: 7px; font-weight: 600; color: #1a3a6e;
+    }
+    .mock-pill-long {
+      display: inline-block; background: var(--s5f); border: 1px solid var(--s5b);
+      border-radius: 3px; padding: 1px 4px; font-size: 7px; font-weight: 600; color: #3e2d7a;
+    }
+
+    /* Alloc bar in mockup */
+    .mock-alloc-wrap { margin-top: 6px; }
+    .mock-alloc-label { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink3); margin-bottom: 3px; }
+    .mock-alloc-bar {
+      display: flex; height: 14px; border-radius: 3px; overflow: hidden;
+      border: 1px solid #ddd;
+    }
+    .alloc-seg { height: 100%; }
+
+    /* ═══════════════════════════════════════════
+       STAGE BAND
+    ═══════════════════════════════════════════ */
+    .stage-band {
+      display: flex; overflow: hidden;
+      border-top: 2px solid rgba(255,255,255,0.4);
+      border-bottom: 2px solid rgba(255,255,255,0.4);
+    }
+    .stage-seg {
+      flex: 1; padding: 20px 22px;
+      display: flex; flex-direction: column; gap: 3px;
+      cursor: default; transition: flex 260ms ease;
+      position: relative; overflow: hidden; min-width: 0;
+    }
+    .stage-seg:hover { flex: 1.5; }
+    .stage-seg-letter { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.65; }
+    .stage-seg-name   { font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stage-seg-steps  { font-size: 11px; opacity: 0.65; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    @media (max-width: 560px) {
+      .stage-seg-name, .stage-seg-steps { display: none; }
+      .stage-seg { padding: 14px 10px; }
+    }
+
+    /* ═══════════════════════════════════════════
+       SECTIONS (general)
+    ═══════════════════════════════════════════ */
+    section {
+      padding: clamp(64px, 8vw, 110px) clamp(20px, 5vw, 80px);
+    }
+    .section-eyebrow {
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--ink3); margin-bottom: 10px;
+    }
+    h2 {
+      font-size: clamp(28px, 3.5vw, 46px);
+      font-weight: 900; letter-spacing: -0.028em; line-height: 1.1;
+      color: var(--ink); margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: clamp(15px, 1.5vw, 17px);
+      color: var(--ink2); max-width: 580px;
+      line-height: 1.7; margin-bottom: 52px;
+    }
+
+    /* ═══════════════════════════════════════════
+       STEPS JOURNEY
+    ═══════════════════════════════════════════ */
+    #journey { background: white; }
+
+    .stage-group { margin-bottom: 32px; }
+    .stage-group-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+    }
+    .stage-label-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 11px; font-weight: 700; border: 1.5px solid; white-space: nowrap;
+    }
+    .stage-label-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .stage-label-name { font-size: 13px; font-weight: 700; color: var(--ink2); }
+
+    .steps-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
+
+    .step-card {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 20px 20px 20px;
+      transition: transform 160ms, box-shadow 160ms, border-color 160ms;
+      position: relative; overflow: hidden;
+    }
+    .step-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 4px; border-radius: 3px 3px 0 0;
+    }
+    .step-card:hover { transform: translateY(-3px); box-shadow: 0 8px 26px rgba(0,0,0,0.09); }
+    .step-num  { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink3); margin-bottom: 7px; }
+    .step-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
+    .step-desc  { font-size: 13px; color: var(--ink2); line-height: 1.55; }
+
+    .step-question {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,0,0,0.04); border-radius: 100px;
+      padding: 4px 10px; font-size: 11px; font-weight: 600; color: var(--ink2);
+      margin-top: 10px;
+    }
+
+    /* ═══════════════════════════════════════════
+       FEATURES SECTION
+    ═══════════════════════════════════════════ */
+    #features { background: var(--bg); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .features-grid { grid-template-columns: 1fr; } }
+
+    .feature-card {
+      background: white; border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 24px;
+      transition: transform 160ms, box-shadow 160ms;
+    }
+    .feature-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+
+    .feature-icon {
+      width: 42px; height: 42px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 21px; margin-bottom: 15px;
+    }
+    .feature-title { font-size: 15px; font-weight: 800; margin-bottom: 8px; line-height: 1.25; }
+    .feature-desc  { font-size: 13px; color: var(--ink2); line-height: 1.58; }
+
+    /* ═══════════════════════════════════════════
+       OUTCOMES SECTION
+    ═══════════════════════════════════════════ */
+    #outcomes { background: white; }
+
+    .outcomes-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media (max-width: 720px) { .outcomes-grid { grid-template-columns: 1fr; } }
+
+    .outcome-card {
+      background: var(--bg); border: 2px solid var(--border);
+      border-radius: var(--r-lg); padding: 30px;
+      position: relative; overflow: hidden;
+      transition: box-shadow 160ms;
+    }
+    .outcome-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.08); }
+    .outcome-top-band {
+      position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    }
+    .outcome-label {
+      font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--ink3); margin-bottom: 10px;
+    }
+    .outcome-title { font-size: 19px; font-weight: 900; line-height: 1.25; margin-bottom: 10px; }
+    .outcome-desc  { font-size: 13px; color: var(--ink2); line-height: 1.6; margin-bottom: 20px; }
+
+    .vehicles-list { display: flex; flex-direction: column; gap: 8px; }
+    .vehicle-card {
+      background: white; border-radius: 8px; border: 1px solid var(--border);
+      border-left: 4px solid; padding: 10px 13px;
+    }
+    .vehicle-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .vehicle-desc { font-size: 11.5px; color: var(--ink2); line-height: 1.5; }
+
+    .outcome-principle {
+      font-style: italic; font-size: 12px; color: var(--ink2);
+      background: white; border-radius: 8px; padding: 10px 14px;
+      border: 1px solid var(--border); margin-top: 14px; line-height: 1.55;
+    }
+    .outcome-principle strong { color: var(--ink); font-style: normal; }
+
+    /* ═══════════════════════════════════════════
+       NUMBERS SHOWCASE
+    ═══════════════════════════════════════════ */
+    #numbers {
+      background: var(--ink);
+      padding: clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px);
+    }
+    #numbers .section-eyebrow { color: rgba(255,255,255,0.45); }
+    #numbers h2 { color: white; }
+    #numbers .section-sub { color: rgba(255,255,255,0.65); }
+
+    .numbers-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+      background: rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    @media (max-width: 700px) { .numbers-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .number-cell {
+      padding: 28px 24px; background: transparent;
+      transition: background 160ms;
+    }
+    .number-cell:hover { background: rgba(255,255,255,0.05); }
+    .number-val   { font-size: 38px; font-weight: 900; color: white; letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px; }
+    .number-label { font-size: 12px; color: rgba(255,255,255,0.55); font-weight: 500; line-height: 1.4; }
+
+    /* ═══════════════════════════════════════════
+       ATTRIBUTION / UKPF HOMAGE
+    ═══════════════════════════════════════════ */
+    #attribution {
+      background: var(--bg);
+      padding: clamp(60px, 7vw, 90px) clamp(20px, 5vw, 80px);
+    }
+    .attr-layout {
+      display: flex; gap: clamp(32px, 6vw, 80px); align-items: flex-start; flex-wrap: wrap;
+    }
+    .attr-left  { flex: 1; min-width: 280px; }
+    .attr-right { flex: 1; min-width: 280px; }
+
+    .attr-source-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 12px 18px; margin-bottom: 24px;
+    }
+    .attr-source-sigil {
+      width: 40px; height: 40px; background: var(--ink); color: white;
+      border-radius: 9px; display: flex; align-items: center; justify-content: center;
+      font-size: 19px; font-weight: 900; flex-shrink: 0;
+    }
+    .attr-source-name { font-size: 15px; font-weight: 800; color: var(--ink); }
+    .attr-source-url  { font-size: 12px; color: var(--ink3); }
+
+    .attr-heading { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .attr-body    { font-size: 14px; color: var(--ink2); line-height: 1.7; margin-bottom: 20px; }
+
+    .attr-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .attr-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: white; border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 7px 13px;
+      font-size: 12px; font-weight: 600; color: var(--ink2);
+      transition: border-color 140ms, color 140ms;
+    }
+    .attr-link:hover { border-color: var(--ink); color: var(--ink); }
+
+    .attr-cc {
+      font-size: 11px; color: var(--ink3);
+      background: white; border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; display: inline-block;
+      line-height: 1.6;
+    }
+
+    .attr-quote {
+      background: white; border: 1.5px solid var(--border);
+      border-left: 4px solid var(--s5b); border-radius: var(--r);
+      padding: 22px 24px;
+    }
+    .attr-quote-text {
+      font-size: 16px; font-weight: 600; color: var(--ink); line-height: 1.6;
+      font-style: italic; margin-bottom: 14px;
+    }
+    .attr-quote-source {
+      font-size: 12px; color: var(--ink3); font-weight: 600;
+    }
+
+    .attr-stages-mini { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px; }
+    .attr-stage-pill  {
+      display: flex; align-items: center; gap: 6px;
+      border-radius: 100px; border: 1.5px solid; padding: 5px 12px;
+      font-size: 11px; font-weight: 700;
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER CTA
+    ═══════════════════════════════════════════ */
+    .footer-cta-section {
+      background: var(--ink);
+      padding: clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px);
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+    }
+    .footer-cta-section h2 { color: white; max-width: 640px; }
+    .footer-cta-section .section-sub { color: rgba(255,255,255,0.65); text-align: center; margin: 0 auto 40px; }
+    .footer-cta-section .section-eyebrow { color: rgba(255,255,255,0.4); }
+
+    .btn-hero-white {
+      background: white; color: var(--ink); border: none;
+      border-radius: 12px; padding: 16px 36px;
+      font-family: var(--font); font-size: 16px; font-weight: 800;
+      display: inline-flex; align-items: center; gap: 10px;
+      cursor: pointer; transition: transform 150ms, box-shadow 150ms;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .btn-hero-white:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(0,0,0,0.3); }
+
+    .footer-disclaimer {
+      color: rgba(255,255,255,0.35); font-size: 12px; margin-top: 24px; max-width: 460px;
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER BAR
+    ═══════════════════════════════════════════ */
+    footer {
+      background: white; border-top: 1px solid var(--border);
+      padding: 22px clamp(20px, 5vw, 80px);
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 8px; }
+    .footer-copy  { font-size: 11.5px; color: var(--ink3); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-link  { font-size: 12px; color: var(--ink3); font-weight: 500; transition: color 140ms; }
+    .footer-link:hover { color: var(--ink); }
+
+    /* ═══════════════════════════════════════════
+       MISC UTILITIES
+    ═══════════════════════════════════════════ */
+    .divider { height: 1px; background: var(--border); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeUp 0.7s ease both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.22s; }
+    .delay-3 { animation-delay: 0.36s; }
+    .delay-4 { animation-delay: 0.52s; }
+
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════ -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-sigil">£</div>
+    <div>
+      <div class="nav-text-name">UK Personal Finance</div>
+      <div class="nav-text-sub">Flowchart v3.0.10</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#journey"     class="nav-link">The Journey</a>
+    <a href="#features"    class="nav-link">Features</a>
+    <a href="#outcomes"    class="nav-link">Outcomes</a>
+    <a href="#attribution" class="nav-link">About</a>
+  </div>
+  <a href="./index.html" class="btn-launch-sm">
+    Launch Flowchart <span style="font-size:16px; line-height:1;">→</span>
+  </a>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<section class="hero">
+
+  <div class="hero-left">
+    <div class="hero-eyebrow fade-in">
+      <span class="hero-eyebrow-dot"></span>
+      Interactive Tool · UK Personal Finance · v3.0.10
+    </div>
+
+    <h1 class="fade-in delay-1">
+      From your
+      <span class="h1-underline">first budget</span><br>
+      to long-term<br>investor.
+    </h1>
+
+    <p class="hero-sub fade-in delay-2">
+      Eight evidence-based steps that take you from financial chaos to a complete, personalised UK investment strategy — with your numbers, goals, and a downloadable action plan built in throughout.
+    </p>
+
+    <div class="hero-actions fade-in delay-3">
+      <a href="./index.html" class="btn-hero">
+        Launch the Flowchart &nbsp;→
+      </a>
+      <a href="#journey" class="btn-hero-ghost">
+        See the journey &nbsp;↓
+      </a>
+    </div>
+
+    <div class="hero-stats fade-in delay-4">
+      <div class="hero-stat">
+        <div class="hero-stat-num">8</div>
+        <div class="hero-stat-label">Steps</div>
+      </div>
+      <div class="hero-stat-div"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">5</div>
+        <div class="hero-stat-label">Stages</div>
+      </div>
+      <div class="hero-stat-div"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">2</div>
+        <div class="hero-stat-label">Outcomes</div>
+      </div>
+      <div class="hero-stat-div"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num" style="font-size:22px;">Free</div>
+        <div class="hero-stat-label">Always</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Hero card mockup ── -->
+  <div class="hero-right fade-in delay-2">
+    <div class="hero-float-badge">
+      <span class="float-pulse"></span>
+      Live &amp; interactive
+    </div>
+
+    <div class="card-mockup">
+
+      <!-- Topbar -->
+      <div class="mock-topbar">
+        <div class="mock-brand">
+          <div class="mock-sigil">£</div>
+          <div>
+            <div class="mock-brand-name">UK Personal Finance</div>
+            <div class="mock-brand-sub">Step 6 — Define Your Goals</div>
+          </div>
+        </div>
+        <button class="mock-restart-btn">↺ Start over</button>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="mock-prog-wrap">
+        <div class="mock-prog-bar" style="width:72%;background:#bfd2ea;"></div>
+      </div>
+
+      <!-- Body -->
+      <div class="mock-body">
+
+        <!-- Sidebar -->
+        <div class="mock-sb">
+          <div class="mock-sb-label">Your Journey</div>
+
+          <div class="mock-step-item done">
+            <div class="mock-step-dot dot-done">✓</div>
+            <div class="mock-step-name">Budget &amp; Bills</div>
+          </div>
+          <div class="mock-step-item done">
+            <div class="mock-step-dot dot-done">✓</div>
+            <div class="mock-step-name">Emergency Fund</div>
+          </div>
+          <div class="mock-step-item done">
+            <div class="mock-step-dot dot-done">✓</div>
+            <div class="mock-step-name">Pension Enrolment</div>
+          </div>
+          <div class="mock-step-item done">
+            <div class="mock-step-dot dot-done">✓</div>
+            <div class="mock-step-name">Debt Review</div>
+          </div>
+          <div class="mock-step-item done">
+            <div class="mock-step-dot dot-done">✓</div>
+            <div class="mock-step-name">Full EF Target</div>
+          </div>
+          <div class="mock-step-item active">
+            <div class="mock-step-dot dot-active" style="background:#bfd2ea;color:#1a3a6e">6</div>
+            <div class="mock-step-name" style="font-weight:700">Define Goals</div>
+          </div>
+          <div class="mock-step-item">
+            <div class="mock-step-dot dot-future">7</div>
+            <div class="mock-step-name">Short-Term Goals</div>
+          </div>
+          <div class="mock-step-item">
+            <div class="mock-step-dot dot-future">8</div>
+            <div class="mock-step-name">Long-Term Invest</div>
+          </div>
+
+          <div class="mock-divider"></div>
+          <div class="mock-sb-label">Your Numbers</div>
+
+          <div class="mock-nums-row">
+            <span class="mock-nk">Monthly income</span>
+            <span class="mock-nv">£3,200</span>
+          </div>
+          <div class="mock-nums-row">
+            <span class="mock-nk">Monthly surplus</span>
+            <span class="mock-nv good">+£1,100</span>
+          </div>
+          <div class="mock-nums-row">
+            <span class="mock-nk">Emergency fund</span>
+            <span class="mock-nv">2.5 mo</span>
+          </div>
+          <div class="mock-nums-row">
+            <span class="mock-nk">Pension match</span>
+            <span class="mock-nv good">Captured</span>
+          </div>
+          <div class="mock-nums-row">
+            <span class="mock-nk">Goals defined</span>
+            <span class="mock-nv good">3</span>
+          </div>
+          <div class="mock-nums-row">
+            <span class="mock-nk">Goal saving/mo</span>
+            <span class="mock-nv warn">£672</span>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="mock-main">
+          <div class="mock-band" style="background:#bfd2ea;"></div>
+          <div class="mock-badge">Step 6</div>
+          <div class="mock-title">Define Your Financial Goals</div>
+          <div class="mock-intro">
+            Write down each goal with a target amount and date. Classify as short-term (&lt;5 yrs) or long-term (5+ yrs).
+          </div>
+
+          <table class="mock-table">
+            <thead>
+              <tr>
+                <th>Goal</th>
+                <th>Target</th>
+                <th>Years</th>
+                <th>Type</th>
+                <th>Monthly</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Holiday fund</td>
+                <td>£2,400</td>
+                <td>1 yr</td>
+                <td><span class="mock-pill-short">Short</span></td>
+                <td class="monthly-cell">£200/mo</td>
+              </tr>
+              <tr>
+                <td>Car deposit</td>
+                <td>£8,000</td>
+                <td>3 yr</td>
+                <td><span class="mock-pill-short">Short</span></td>
+                <td class="monthly-cell">£222/mo</td>
+              </tr>
+              <tr>
+                <td>House deposit</td>
+                <td>£40,000</td>
+                <td>7 yr</td>
+                <td><span class="mock-pill-long">Long</span></td>
+                <td class="monthly-cell">£476/mo</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="mock-alloc-wrap">
+            <div class="mock-alloc-label">Monthly Allocation</div>
+            <div class="mock-alloc-bar">
+              <div class="alloc-seg" style="flex:1400;background:#efd0d0;" title="Essential"></div>
+              <div class="alloc-seg" style="flex:200;background:#dbeacb;" title="Savings"></div>
+              <div class="alloc-seg" style="flex:422;background:#bfd2ea;" title="Short goals"></div>
+              <div class="alloc-seg" style="flex:476;background:#ddd4f2;" title="Long goals"></div>
+              <div class="alloc-seg" style="flex:500;background:#e8e8e8;" title="Other"></div>
+              <div class="alloc-seg" style="flex:202;background:#dfead5;" title="Surplus"></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /mock-body -->
+    </div><!-- /card-mockup -->
+  </div><!-- /hero-right -->
+
+</section><!-- /hero -->
+
+
+<!-- ═══════════════════════════════════════════
+     STAGE BAND
+═══════════════════════════════════════════ -->
+<div class="stage-band" id="stages">
+  <div class="stage-seg" style="background:#efd0d0;color:#4a1818;">
+    <div class="stage-seg-letter">Stage A</div>
+    <div class="stage-seg-name">Foundations</div>
+    <div class="stage-seg-steps">Budget · Essential bills · Costly debt</div>
+  </div>
+  <div class="stage-seg" style="background:#f3e3ad;color:#4a2e00;">
+    <div class="stage-seg-letter">Stage B</div>
+    <div class="stage-seg-name">Safety Net</div>
+    <div class="stage-seg-steps">Emergency fund · Pension enrolment</div>
+  </div>
+  <div class="stage-seg" style="background:#dbeacb;color:#1e3a10;">
+    <div class="stage-seg-letter">Stage C</div>
+    <div class="stage-seg-name">Debt &amp; Buffer</div>
+    <div class="stage-seg-steps">Debt schedule · Full emergency fund</div>
+  </div>
+  <div class="stage-seg" style="background:#dce8f6;color:#0e2a4e;">
+    <div class="stage-seg-letter">Stage D</div>
+    <div class="stage-seg-name">Goal Planning</div>
+    <div class="stage-seg-steps">Budget review · Financial goals</div>
+  </div>
+  <div class="stage-seg" style="background:#ddd4f2;color:#2e1a5e;">
+    <div class="stage-seg-letter">Stage E</div>
+    <div class="stage-seg-name">Investing</div>
+    <div class="stage-seg-steps">Short-term goals · Long-term strategy</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     THE 8-STEP JOURNEY
+═══════════════════════════════════════════ -->
+<section id="journey">
+  <div class="section-eyebrow">The Journey</div>
+  <h2>Eight steps to complete financial clarity.</h2>
+  <p class="section-sub">
+    Every step builds on the last. You move only when you're ready — and the tool tracks your numbers and progress throughout.
+  </p>
+
+  <!-- Stage A -->
+  <div class="stage-group">
+    <div class="stage-group-header">
+      <div class="stage-label-pill" style="background:#efd0d0;border-color:#c99696;color:#4a1818;">
+        <span class="stage-label-dot" style="background:#e1b5b5;"></span>
+        Stage A — Foundations
+      </div>
+    </div>
+    <div class="steps-row">
+      <div class="step-card" style="--step-color:#e1b5b5;">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#e1b5b5;border-radius:3px 3px 0 0;"></div>
+        <div class="step-num">Step 1</div>
+        <div class="step-title">Budget &amp; Pay Essential Bills</div>
+        <div class="step-desc">Create a budget, check benefit eligibility, insure essentials, and make minimum payments on all debts. Stabilise before optimising.</div>
+        <div class="step-question">❓ Do you rely on credit for essentials?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage B -->
+  <div class="stage-group">
+    <div class="stage-group-header">
+      <div class="stage-label-pill" style="background:#f3e3ad;border-color:#c9af63;color:#4a2e00;">
+        <span class="stage-label-dot" style="background:#e7d08a;"></span>
+        Stage B — Safety Net
+      </div>
+    </div>
+    <div class="steps-row">
+      <div class="step-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#e7d08a;border-radius:3px 3px 0 0;"></div>
+        <div class="step-num">Step 2</div>
+        <div class="step-title">Build Your Initial Emergency Fund</div>
+        <div class="step-desc">Save 1–3 months of essential outgoings in an easy-access account. One unexpected cost should not push you back into debt.</div>
+      </div>
+      <div class="step-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#e7d08a;border-radius:3px 3px 0 0;"></div>
+        <div class="step-num">Step 3</div>
+        <div class="step-title">Enrol in Your Workplace Pension</div>
+        <div class="step-desc">Capture the full employer pension match — it's free money added to your salary. Contribute enough to meet the matching threshold.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage C -->
+  <div class="stage-group">
+    <div class="stage-group-header">
+      <div class="stage-label-pill" style="background:#dbeacb;border-color:#98b07f;color:#1e3a10;">
+        <span class="stage-label-dot" style="background:#bfd7a6;"></span>
+        Stage C — Debt &amp; Buffer
+      </div>
+    </div>
+    <div class="steps-row">
+      <div class="step-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#bfd7a6;border-radius:3px 3px 0 0;"></div>
+        <div class="step-num">Step 4</div>
+        <div class="step-title">Create a Debt Repayment Schedule</div>
+        <div class="step-desc">List every debt with its APR. Compare against savings rates and prioritise overpaying higher-rate debts using the avalanche method.</div>
+        <div class="step-question">❓ Any debt beyond mortgage or student loan?</div>
+      </div>
+      <div class="step-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#bfd7a6;border-radius:3px 3px 0 0;"></div>
+        <div class="step-num">Step 5</div>
+        <div class="step-title">Build Your Full Emergency Fund</div>
+        <div class="step-desc">With costly debt cleared, expand your buffer to 3–6 months of essentials. Self-employed or variable income? Consider 6–12 months.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage D -->
+  <div class="stage-group">
+    <div class="stage-group-header">
+      <div class="stage-label-pill" style="background:#dce8f6;border-color:#98b2cf;color:#0e2a4e;">
+        <span class="stage-label-dot" style="background:#bfd2ea;"></span>
+        Stage D — Goal Planning
+      </div>
+    </div>
+    <div class="steps-row">
+      <div class="step-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#bfd2ea;border-radius:3px 3px 0 0;"></div>
+        <div class="step-num">Step 6</div>
+        <div class="step-title">Define Your Financial Goals</div>
+        <div class="step-desc">Reassess your budget with newly freed cash flow. Write down each goal with a target amount and classify it as short-term (&lt;5 yrs) or long-term.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage E -->
+  <div class="stage-group">
+    <div class="stage-group-header">
+      <div class="stage-label-pill" style="background:#ddd4f2;border-color:#9f95c6;color:#2e1a5e;">
+        <span class="stage-label-dot" style="background:#c2b4e4;"></span>
+        Stage E — Long-Term Investing
+      </div>
+    </div>
+    <div class="steps-row">
+      <div class="step-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#c2b4e4;border-radius:3px 3px 0 0;"></div>
+        <div class="step-num">Step 7</div>
+        <div class="step-title">Save for Short-Term Goals</div>
+        <div class="step-desc">Money needed within 5 years belongs in cash. Explore Cash LISAs, easy-access savings, Premium Bonds, and fixed-rate accounts.</div>
+        <div class="step-question">❓ Are short-term goals on track?</div>
+      </div>
+      <div class="step-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#c2b4e4;border-radius:3px 3px 0 0;"></div>
+        <div class="step-num">Step 8</div>
+        <div class="step-title">Long-Term Investing (5+ years)</div>
+        <div class="step-desc">Choose the most tax-efficient wrapper for your situation — the answer depends on whether you need access before pension age (~58).</div>
+        <div class="step-question">❓ Need access before pension age?</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     WHAT'S INSIDE (FEATURES)
+═══════════════════════════════════════════ -->
+<section id="features">
+  <div class="section-eyebrow">What's Inside</div>
+  <h2>A complete financial toolkit.<br>In a single page.</h2>
+  <p class="section-sub">
+    Every feature is built around the idea that good financial planning requires your actual numbers — not just generic advice.
+  </p>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#efd0d0;">📊</div>
+      <div class="feature-title">Live Budget Analysis</div>
+      <div class="feature-desc">
+        Enter income, essential spending, savings, and discretionary spend. The tool computes your monthly surplus and savings rate in real time, displayed throughout the journey.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#f3e3ad;">🏦</div>
+      <div class="feature-title">Emergency Fund Tracker</div>
+      <div class="feature-desc">
+        Input your accessible savings and see how many months of essential spending you can cover. Clear prompts on when your starter fund becomes a full fund.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#dbeacb;">💳</div>
+      <div class="feature-title">Debt Scheduler</div>
+      <div class="feature-desc">
+        Add each debt with its balance, APR, and minimum payment. The tool identifies the highest-rate debts first and highlights the total monthly interest cost.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#dce8f6;">🎯</div>
+      <div class="feature-title">Goal Planner with Monthly Targets</div>
+      <div class="feature-desc">
+        Define as many goals as you need. Each one calculates the monthly saving required — and the chart shows exactly how goals fit against your monthly surplus.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#ddd4f2;">📈</div>
+      <div class="feature-title">Goals Allocation Chart</div>
+      <div class="feature-desc">
+        A visual stacked bar shows how every pound of income is allocated: essential, savings, short-term goals, long-term goals, discretionary, and surplus.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#dfead5;">💼</div>
+      <div class="feature-title">Pension Match Optimiser</div>
+      <div class="feature-desc">
+        Enter your gross salary and employer match details to see whether you're capturing the full match — and the exact monthly and annual cost if you're not.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#efd0d0;">🧠</div>
+      <div class="feature-title">Smart Insight Cards</div>
+      <div class="feature-desc">
+        At every step, contextual insight cards appear based on your numbers — critical alerts, progress indicators, and personalised notes that update live as you type.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#f3e3ad;">🗺</div>
+      <div class="feature-title">Living Sidebar</div>
+      <div class="feature-desc">
+        Your journey progress and nine key metrics update in real time in the sidebar: income, surplus, emergency fund months, pension status, debt APR, total debt, and goals.
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#ddd4f2;">📄</div>
+      <div class="feature-title">Downloadable PDF Action Plan</div>
+      <div class="feature-desc">
+        Generate a professional, print-ready report with your key numbers, a goals table, income allocation chart, priority action list, and personalised investment strategy.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     TWO INVESTMENT OUTCOMES
+═══════════════════════════════════════════ -->
+<section id="outcomes">
+  <div class="section-eyebrow">Your Personalised Outcome</div>
+  <h2>Every path leads to a clear strategy.</h2>
+  <p class="section-sub">
+    The flowchart ends with a personalised investment recommendation — determined by one key question about when you need your money.
+  </p>
+
+  <div class="outcomes-grid">
+
+    <!-- Outcome A: Pre-pension -->
+    <div class="outcome-card">
+      <div class="outcome-top-band" style="background:#bfd2ea;"></div>
+      <div class="outcome-label">Outcome A</div>
+      <div class="outcome-title">Invest for Long-Term Goals Before Pension Age</div>
+      <div class="outcome-desc">
+        For goals you'll access before approximately age 58 — early retirement, large purchases, financial independence. Prioritise flexible, tax-efficient wrappers.
+      </div>
+      <div class="vehicles-list">
+        <div class="vehicle-card" style="border-left-color:#bfd2ea;">
+          <div class="vehicle-name">Stocks &amp; Shares ISA</div>
+          <div class="vehicle-desc">Primary recommendation. Up to £20,000/year. All growth and income is tax-free. Accessible at any time with no penalty.</div>
+        </div>
+        <div class="vehicle-card" style="border-left-color:#bfd2ea;">
+          <div class="vehicle-name">Stocks &amp; Shares LISA</div>
+          <div class="vehicle-desc">25% government bonus (max £1,000/year). Only if buying a first home under £450,000. Penalties apply for other withdrawals.</div>
+        </div>
+        <div class="vehicle-card" style="border-left-color:#c8c8c8;">
+          <div class="vehicle-name">General Investment Account (GIA)</div>
+          <div class="vehicle-desc">No annual limit. Use once your £20,000 ISA allowance is used up. Capital gains may be taxable.</div>
+        </div>
+      </div>
+      <div class="outcome-principle">
+        <strong>Key principle:</strong> Invest in low-cost, globally diversified index funds. Keep charges as low as possible.
+      </div>
+    </div>
+
+    <!-- Outcome B: Post-pension -->
+    <div class="outcome-card">
+      <div class="outcome-top-band" style="background:#c2b4e4;"></div>
+      <div class="outcome-label">Outcome B</div>
+      <div class="outcome-title">Invest for Retirement &amp; Long-Term Goals</div>
+      <div class="outcome-desc">
+        For money you will not need until pension age or later. Pension wrappers offer the most powerful tax advantages available in the UK.
+      </div>
+      <div class="vehicles-list">
+        <div class="vehicle-card" style="border-left-color:#c2b4e4;">
+          <div class="vehicle-name">Workplace Pension</div>
+          <div class="vehicle-desc">Increase contributions beyond the minimum match. Salary sacrifice maximises efficiency — contributions reduce your taxable income directly.</div>
+        </div>
+        <div class="vehicle-card" style="border-left-color:#c2b4e4;">
+          <div class="vehicle-name">SIPP (Self-Invested Personal Pension)</div>
+          <div class="vehicle-desc">Especially valuable for 40%+ taxpayers who can claim additional tax relief via Self Assessment. Wide investment choice.</div>
+        </div>
+        <div class="vehicle-card" style="border-left-color:#c2b4e4;">
+          <div class="vehicle-name">Stocks &amp; Shares LISA</div>
+          <div class="vehicle-desc">25% government bonus within the £4,000/year limit. Subject to the 25% withdrawal penalty outside qualifying rules.</div>
+        </div>
+      </div>
+      <div class="outcome-principle">
+        <strong>Key principle:</strong> Invest in low-cost, globally diversified index funds using the most tax-efficient wrapper for your circumstances.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     NUMBERS SHOWCASE
+═══════════════════════════════════════════ -->
+<section id="numbers">
+  <div class="section-eyebrow">Everything Tracked</div>
+  <h2 style="color:white;max-width:540px;">Your numbers, always visible.</h2>
+  <p class="section-sub">
+    Nine live metrics in the sidebar. Updated instantly as you input — so you always know where you stand.
+  </p>
+  <div class="numbers-grid">
+    <div class="number-cell">
+      <div class="number-val">£</div>
+      <div class="number-label">Monthly income &amp; surplus tracked in real time</div>
+    </div>
+    <div class="number-cell">
+      <div class="number-val">3–6</div>
+      <div class="number-label">Months of emergency fund, computed from your essential spend</div>
+    </div>
+    <div class="number-cell">
+      <div class="number-val">APR</div>
+      <div class="number-label">Highest debt interest rate flagged immediately</div>
+    </div>
+    <div class="number-cell">
+      <div class="number-val">%</div>
+      <div class="number-label">Savings rate as a percentage of take-home income</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     ATTRIBUTION — UKPF HOMAGE
+═══════════════════════════════════════════ -->
+<section id="attribution">
+  <div class="attr-layout">
+
+    <div class="attr-left">
+      <a href="https://ukpersonal.finance/flowchart/" target="_blank" rel="noopener" class="attr-source-badge" style="text-decoration:none;">
+        <div class="attr-source-sigil">£</div>
+        <div>
+          <div class="attr-source-name">UK Personal Finance</div>
+          <div class="attr-source-url">ukpersonal.finance</div>
+        </div>
+      </a>
+
+      <div class="attr-heading">Built on the UKPF Flowchart</div>
+      <div class="attr-body">
+        This tool is an interactive implementation of the <strong>UK Personal Finance Flowchart</strong> — the community-maintained, evidence-based guide to personal finance created and refined by the r/UKPersonalFinance community.
+        <br><br>
+        The flowchart distils years of community knowledge into eight clear, ordered steps that apply to the vast majority of UK savers. It's the closest thing to universally sound UK financial guidance available for free.
+      </div>
+
+      <div class="attr-links">
+        <a href="https://ukpersonal.finance/flowchart/"   target="_blank" rel="noopener" class="attr-link">Flowchart ↗</a>
+        <a href="https://ukpersonal.finance/budgeting/"   target="_blank" rel="noopener" class="attr-link">Budgeting ↗</a>
+        <a href="https://ukpersonal.finance/emergency-fund/" target="_blank" rel="noopener" class="attr-link">Emergency Fund ↗</a>
+        <a href="https://ukpersonal.finance/pensions/"    target="_blank" rel="noopener" class="attr-link">Pensions ↗</a>
+        <a href="https://ukpersonal.finance/isa/"         target="_blank" rel="noopener" class="attr-link">ISA Guide ↗</a>
+        <a href="https://ukpersonal.finance/debt/"        target="_blank" rel="noopener" class="attr-link">Debt ↗</a>
+        <a href="https://ukpersonal.finance/investing/"   target="_blank" rel="noopener" class="attr-link">Investing ↗</a>
+        <a href="https://ukpersonal.finance/index-funds/" target="_blank" rel="noopener" class="attr-link">Index Funds ↗</a>
+      </div>
+
+      <div class="attr-cc">
+        This interactive tool is based on the UKPF Flowchart v3.0.10<br>
+        Licensed under <strong>CC BY-NC-SA 4.0</strong> · For education only · Not financial advice
+      </div>
+
+      <div class="attr-stages-mini">
+        <div class="attr-stage-pill" style="background:#efd0d0;border-color:#c99696;color:#4a1818;">Stage A — Foundations</div>
+        <div class="attr-stage-pill" style="background:#f3e3ad;border-color:#c9af63;color:#4a2e00;">Stage B — Safety Net</div>
+        <div class="attr-stage-pill" style="background:#dbeacb;border-color:#98b07f;color:#1e3a10;">Stage C — Debt &amp; Buffer</div>
+        <div class="attr-stage-pill" style="background:#dce8f6;border-color:#98b2cf;color:#0e2a4e;">Stage D — Goal Planning</div>
+        <div class="attr-stage-pill" style="background:#ddd4f2;border-color:#9f95c6;color:#2e1a5e;">Stage E — Investing</div>
+      </div>
+    </div>
+
+    <div class="attr-right">
+      <div class="attr-quote">
+        <div class="attr-quote-text">
+          "Debt above 10% APR almost always outweighs expected investment returns. Eliminating it offers a guaranteed return equivalent to the rate — hard to beat elsewhere."
+        </div>
+        <div class="attr-quote-source">— UK Personal Finance Flowchart, Step 1</div>
+      </div>
+
+      <div class="attr-quote" style="margin-top:14px;border-left-color:#bfd2ea;">
+        <div class="attr-quote-text">
+          "Employer pension matching is effectively free money added to your salary. Missing it is leaving part of your pay on the table."
+        </div>
+        <div class="attr-quote-source">— UK Personal Finance Flowchart, Step 3</div>
+      </div>
+
+      <div class="attr-quote" style="margin-top:14px;border-left-color:#c2b4e4;">
+        <div class="attr-quote-text">
+          "Money needed within 5 years should be kept in cash or near-cash to avoid the risk of a market fall just before you need it."
+        </div>
+        <div class="attr-quote-source">— UK Personal Finance Flowchart, Step 7</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER CTA
+═══════════════════════════════════════════ -->
+<div class="footer-cta-section">
+  <div class="section-eyebrow">Ready?</div>
+  <h2>Start your financial journey today.</h2>
+  <p class="section-sub">
+    It takes about 10 minutes to complete. Your progress is saved automatically — pick up where you left off any time.
+  </p>
+  <a href="./index.html" class="btn-hero-white">
+    Launch the Flowchart &nbsp;→
+  </a>
+  <div class="footer-disclaimer">
+    Free forever. No account required. Nothing is sent anywhere — your data stays in your browser.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER BAR
+═══════════════════════════════════════════ -->
+<footer>
+  <div class="footer-brand">
+    <div class="nav-sigil" style="width:26px;height:26px;font-size:13px;">£</div>
+    <div>
+      <div style="font-size:12px;font-weight:700;">UK Personal Finance Flowchart</div>
+      <div style="font-size:10px;color:var(--ink3);">Interactive tool · v3.0.10</div>
+    </div>
+  </div>
+  <div class="footer-copy">
+    Based on the UKPF Flowchart · CC BY-NC-SA 4.0 · Not financial advice
+  </div>
+  <div class="footer-links">
+    <a href="https://ukpersonal.finance/flowchart/" target="_blank" rel="noopener" class="footer-link">UKPF Flowchart ↗</a>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener" class="footer-link">CC Licence ↗</a>
+    <a href="./index.html" class="footer-link" style="font-weight:700;color:var(--ink);">Launch Tool →</a>
+  </div>
+</footer>
+
+</body>
+</html>

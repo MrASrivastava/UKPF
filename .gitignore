@@ -1,0 +1,17 @@
+# Claude Code configuration (development-only)
+.claude/
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor artefacts
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Local notes
+*.local.md
