@@ -1,8 +1,8 @@
 # 💷 UK Personal Finance Flowchart — Interactive Tool
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-[![Version](https://img.shields.io/badge/version-3.0.10-4a90d9)](https://github.com/)
-[![No Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)](https://github.com/)
+[![Version](https://img.shields.io/badge/version-3.0.10-4a90d9)](https://github.com/MrASrivastava/UKPF)
+[![No Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)](https://github.com/MrASrivastava/UKPF)
 [![Single File](https://img.shields.io/badge/size-single%20HTML%20file-orange)](./index.html)
 [![Vanilla JS](https://img.shields.io/badge/built%20with-vanilla%20JS-f7df1e)](./index.html)
 
@@ -28,9 +28,11 @@ Built for the UK. Based on the community-maintained [UKPF Flowchart](https://ukp
 
 ## 🌐 Live Demo / Landing Page
 
-Open [`landing.html`](./landing.html) in your browser for the full landing page, or go straight to the tool by opening [`index.html`](./index.html).
+**▶ Use the tool:** https://mrasrivastava.github.io/UKPF/
 
-No build step. No installation. Just open the file.
+**Landing page:** https://mrasrivastava.github.io/UKPF/landing.html
+
+Hosted free on GitHub Pages. No sign-up, no installation — just open the link. You can also open [`index.html`](./index.html) or [`landing.html`](./landing.html) locally in your browser.
 
 ---
 
@@ -98,7 +100,7 @@ The journey ends with one of two investment strategies, based on whether you nee
 ### Option 2 — Clone the repository
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/UKPF.git
+git clone https://github.com/MrASrivastava/UKPF.git
 cd UKPF
 # Open index.html in your browser
 open index.html          # macOS
